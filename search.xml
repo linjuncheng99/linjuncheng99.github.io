@@ -3,13 +3,12 @@
   <entry>
     <title><![CDATA[java学习路线]]></title>
     <url>%2F2019%2F08%2F11%2Fjava%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF%2F</url>
-    <content type="text"><![CDATA[java的学习路线基础知识]]></content>
+    <content type="text"><![CDATA[java的学习路线基础知识 编程语言：java 基本算法 基本网络知识：TCP/IP HTTP/HTTPs 基本的设计模式 工具方面 操作系统：Linux 代码管理：SVN/git 持续集成（CI/CD）：jenkins java项目管理工具：maven 框架方面应用层框架 ssh：spring+structs+hibernate ssm：spring+springMVC+mybatis springboot 中间件 MQ 消息队列 RPC 通信框架 elasticserach 搜索引擎 数据库 SQL：MYSQL/oracle NOSQL： Redis mongodb 架构方面分布式/微服务 springcloud dubbo 虚拟化/容器化技术 Docker 容器 K8S kubernetes 关注源码/性能 JDK 源码以及设计思想 spring 源码 JVM 细节 高并发/高可用]]></content>
       <categories>
         <category>java</category>
       </categories>
       <tags>
         <tag>java</tag>
-        <tag>思维导图</tag>
       </tags>
   </entry>
 </search>

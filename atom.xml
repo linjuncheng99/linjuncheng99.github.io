@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://codelin.com/"/>
-  <updated>2019-08-11T08:54:55.485Z</updated>
+  <updated>2019-08-12T06:52:21.669Z</updated>
   <id>http://codelin.com/</id>
   
   <author>
@@ -21,9 +21,9 @@
     <link href="http://codelin.com/2019/08/11/java%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF/"/>
     <id>http://codelin.com/2019/08/11/java学习路线/</id>
     <published>2019-08-11T07:44:43.000Z</published>
-    <updated>2019-08-11T08:54:55.485Z</updated>
+    <updated>2019-08-12T06:52:21.669Z</updated>
     
-    <content type="html"><![CDATA[<h1 id="java的学习路线"><a href="#java的学习路线" class="headerlink" title="java的学习路线"></a>java的学习路线</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><a id="more"></a>]]></content>
+    <content type="html"><![CDATA[<h1 id="java的学习路线"><a href="#java的学习路线" class="headerlink" title="java的学习路线"></a>java的学习路线</h1><h2 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h2><a id="more"></a><ul><li>编程语言：java</li><li>基本算法</li><li>基本网络知识：TCP/IP HTTP/HTTPs</li><li>基本的设计模式</li></ul><hr><h2 id="工具方面"><a href="#工具方面" class="headerlink" title="工具方面"></a>工具方面</h2><ul><li>操作系统：Linux</li><li>代码管理：SVN/git</li><li>持续集成（CI/CD）：jenkins</li><li>java项目管理工具：maven</li></ul><hr><h2 id="框架方面"><a href="#框架方面" class="headerlink" title="框架方面"></a>框架方面</h2><h4 id="应用层框架"><a href="#应用层框架" class="headerlink" title="应用层框架"></a>应用层框架</h4><ul><li>ssh：spring+structs+hibernate</li><li>ssm：spring+springMVC+mybatis</li><li>springboot</li></ul><h4 id="中间件"><a href="#中间件" class="headerlink" title="中间件"></a>中间件</h4><ul><li>MQ 消息队列</li><li>RPC 通信框架</li><li>elasticserach 搜索引擎</li></ul><h4 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h4><ul><li>SQL：MYSQL/oracle</li><li>NOSQL： Redis mongodb</li></ul><hr><h2 id="架构方面"><a href="#架构方面" class="headerlink" title="架构方面"></a>架构方面</h2><h4 id="分布式-微服务"><a href="#分布式-微服务" class="headerlink" title="分布式/微服务"></a>分布式/微服务</h4><ul><li>springcloud</li><li>dubbo</li></ul><h4 id="虚拟化-容器化技术"><a href="#虚拟化-容器化技术" class="headerlink" title="虚拟化/容器化技术"></a>虚拟化/容器化技术</h4><ul><li>Docker 容器</li><li>K8S kubernetes</li></ul><hr><h2 id="关注源码-性能"><a href="#关注源码-性能" class="headerlink" title="关注源码/性能"></a>关注源码/性能</h2><ul><li>JDK 源码以及设计思想</li><li>spring 源码</li><li>JVM 细节</li><li>高并发/高可用</li></ul>]]></content>
     
     <summary type="html">
     
@@ -35,8 +35,6 @@
     
     
       <category term="java" scheme="http://codelin.com/tags/java/"/>
-    
-      <category term="思维导图" scheme="http://codelin.com/tags/%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/"/>
     
   </entry>
   
