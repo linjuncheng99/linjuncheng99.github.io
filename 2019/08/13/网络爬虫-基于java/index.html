@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon32.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link rel="stylesheet" href="/lib/pace/pace-theme-center-atom.min.css?v=1.0.2">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="keywords" content="java,爬虫">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络爬虫--基于java">
+<meta property="og:url" content="http://codelin.com/2019/08/13/网络爬虫-基于java/index.html">
+<meta property="og:site_name" content="CodeLin">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1565712985941&di=3fdb3a5e07be113b326d9d0c12e90585&imgtype=0&src=http%3A%2F%2Fwx2.sinaimg.cn%2Flarge%2Fc5131475ly1fsjtexv0cyj20gj09a40f.jpg">
+<meta property="og:updated_time" content="2019-08-14T05:51:47.364Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="网络爬虫--基于java">
+<meta name="twitter:image" content="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1565712985941&di=3fdb3a5e07be113b326d9d0c12e90585&imgtype=0&src=http%3A%2F%2Fwx2.sinaimg.cn%2Flarge%2Fc5131475ly1fsjtexv0cyj20gj09a40f.jpg">
+  <link rel="alternate" href="/atom.xml" title="CodeLin" type="application/atom+xml">
+  <link rel="canonical" href="http://codelin.com/2019/08/13/网络爬虫-基于java/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>网络爬虫--基于java | CodeLin</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+    <a href="https://github.com/linjuncheng99" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#64CEAA; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CodeLin</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录成长</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://codelin.com/2019/08/13/网络爬虫-基于java/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lin">
+      <meta itemprop="description" content="狂热的学习者">
+      <meta itemprop="image" content="https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1565507189&di=87cd31600d20c600a0e2328cb1af89ea&src=http://img5.duitang.com/uploads/item/201406/11/20140611194517_KWmL5.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CodeLin">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">网络爬虫--基于java
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-13 21:17:59" itemprop="dateCreated datePublished" datetime="2019-08-13T21:17:59+08:00">2019-08-13</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-08-14 13:51:47" itemprop="dateModified" datetime="2019-08-14T13:51:47+08:00">2019-08-14</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/爬虫/" itemprop="url" rel="index"><span itemprop="name">爬虫</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span>6.1k</span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span>6 分钟</span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1565712985941&di=3fdb3a5e07be113b326d9d0c12e90585&imgtype=0&src=http%3A%2F%2Fwx2.sinaimg.cn%2Flarge%2Fc5131475ly1fsjtexv0cyj20gj09a40f.jpg" alt="爬虫"></p>
+<a id="more"></a>
+
+<h1 id="网络爬虫介绍"><a href="#网络爬虫介绍" class="headerlink" title="网络爬虫介绍"></a>网络爬虫介绍</h1><h2 id="什么是网络爬虫"><a href="#什么是网络爬虫" class="headerlink" title="什么是网络爬虫"></a>什么是网络爬虫</h2><ul>
+<li><ol>
+<li>网络爬虫（又被称为网页蜘蛛，网络机器人，在FOAF社区中间，更经常的称为网页追逐者），是一种按照一定的规则，自动地抓取万维网信息的程序或者脚本。另外一些不常使用的名字还有蚂蚁、自动索引、模拟程序或者蠕虫。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>网络爬虫是一个自动提取网页的程序，它为搜索引擎从万维网上下载网页，是搜索引擎的重要组成。传统爬虫从一个或若干初始网页的URL开始，获得初始网页上的URL，在抓取网页的过程中，不断从当前页面上抽取新的URL放入队列,直到满足系统的一定停止条件。聚焦爬虫的工作流程较为复杂，需要根据一定的网页分析算法过滤与主题无关的链接，保留有用的链接并将其放入等待抓取的URL队列。然后，它将根据一定的搜索策略从队列中选择下一步要抓取的网页URL，并重复上述过程，直到达到系统的某一条件时停止。另外，所有被爬虫抓取的网页将会被系统存贮，进行一定的分析、过滤，并建立索引，以便之后的查询和检索；对于聚焦爬虫来说，这一过程所得到的分析结果还可能对以后的抓取过程给出反馈和指导。</li>
+</ol>
+</li>
+</ul>
+<h2 id="入门程序"><a href="#入门程序" class="headerlink" title="入门程序"></a>入门程序</h2><h3 id="1-在pom-xml添加配置文件"><a href="#1-在pom-xml添加配置文件" class="headerlink" title="1.在pom.xml添加配置文件"></a>1.在pom.xml添加配置文件</h3><ul>
+<li>httpClient：<a href="https://mvnrepository.com/search?q=httpclient" target="_blank" rel="noopener">https://mvnrepository.com/search?q=httpclient</a></li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.httpcomponents<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>httpclient<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.5.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>slf4j:<a href="https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12" target="_blank" rel="noopener">https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12</a></li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.slf4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>slf4j-log4j12<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.7.25<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-创建log4j-properties文件："><a href="#2-创建log4j-properties文件：" class="headerlink" title="2.创建log4j.properties文件："></a>2.创建log4j.properties文件：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">log4j.rootLogger=DEBUG,A1</span><br><span class="line">log4j.logger.com.ljc=DEBUG</span><br><span class="line"></span><br><span class="line">log4j.appender.A1=org.apache.log4j.ConsoleAppender</span><br><span class="line">log4j.appender.A1.layout=org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.A1.layout.ConversionPattern=%-d&#123;yyyy-MM-dd HH:mm:ss,SSS&#125;[%t] [%c]-[%p] %m%n</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-代码："><a href="#3-代码：" class="headerlink" title="3.代码："></a>3.代码：</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.ljc.crawler.test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.http.HttpEntity;</span><br><span class="line"><span class="keyword">import</span> org.apache.http.client.methods.CloseableHttpResponse;</span><br><span class="line"><span class="keyword">import</span> org.apache.http.client.methods.HttpGet;</span><br><span class="line"><span class="keyword">import</span> org.apache.http.impl.client.CloseableHttpClient;</span><br><span class="line"><span class="keyword">import</span> org.apache.http.impl.client.HttpClients;</span><br><span class="line"><span class="keyword">import</span> org.apache.http.util.EntityUtils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CrawlerFirst</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="comment">//1.打开浏览器，创建HttpClient对象</span></span><br><span class="line">        CloseableHttpClient httpClient= HttpClients.createDefault();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//2.输入网址，发起get请求创建HttpGet对象</span></span><br><span class="line">        HttpGet httpGet=<span class="keyword">new</span> HttpGet(<span class="string">"http://www.baidu.com"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//3.按回车，发起请求，返回响应，使用HttpClient对象发起请求</span></span><br><span class="line">        CloseableHttpResponse response=httpClient.execute(httpGet);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//4.解析响应，获取数据</span></span><br><span class="line">        <span class="comment">//判断状态码是否为200</span></span><br><span class="line">        <span class="keyword">if</span>(response.getStatusLine().getStatusCode()==<span class="number">200</span>)&#123;</span><br><span class="line">            HttpEntity httpEntity=response.getEntity();</span><br><span class="line">            String content= EntityUtils.toString(httpEntity,<span class="string">"utf8"</span>);</span><br><span class="line"></span><br><span class="line">            System.out.println(content);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="HttpClient"><a href="#HttpClient" class="headerlink" title="HttpClient"></a>HttpClient</h2><h3 id="1-Get请求：带参数"><a href="#1-Get请求：带参数" class="headerlink" title="1. Get请求：带参数"></a>1. Get请求：带参数</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//设置请求地址是：http://yun.itheima.com/search?keys=java</span></span><br><span class="line">        <span class="comment">//创建URINuilder</span></span><br><span class="line">        URIBuilder uriBuilder=<span class="keyword">new</span> URIBuilder(<span class="string">"http://yun.itheima.com/search?keys=java"</span>);</span><br><span class="line">        <span class="comment">//设置参数</span></span><br><span class="line">        uriBuilder.setParameter(<span class="string">"keys"</span>,<span class="string">"java"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//创建HttpGet对象，设置URL地址</span></span><br><span class="line">        HttpGet httpGet=<span class="keyword">new</span> HttpGet(uriBuilder.build());</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">"发起请求的信息："</span>+httpGet);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果是无参数的GET请求，则直接使用构造方法<font color="red"> HttpGet(String url) </font>创建HttpGet对象即可；<br>如果是带参数GET请求，则可以先使用<font color="red">URIBuilder(String url) </font>创建对象，再调用<font color="red">addParameter(String param, String value)，或setParameter(String param, String value)</font>来设置请求参数，并调用build()方法构建一个URI对象。只有构造方法HttpGet(URI uri)来创建HttpGet对象。</li>
+</ul>
+<h3 id="2-POST请求：带参数"><a href="#2-POST请求：带参数" class="headerlink" title="2.POST请求：带参数"></a>2.POST请求：带参数</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建HttpPost对象，设置URL地址</span></span><br><span class="line">       HttpPost httpPost=<span class="keyword">new</span> HttpPost(<span class="string">"http://yun.itheima.com/search"</span>);</span><br><span class="line"></span><br><span class="line">       <span class="comment">//声明List集合：封装表单中的参数</span></span><br><span class="line">       List&lt;NameValuePair&gt; params=<span class="keyword">new</span> ArrayList&lt;NameValuePair&gt;();</span><br><span class="line">       params.add(<span class="keyword">new</span> BasicNameValuePair(<span class="string">"keys"</span>,<span class="string">"java"</span>));</span><br><span class="line"></span><br><span class="line">       <span class="comment">//创建表单的Entity对象</span></span><br><span class="line">       UrlEncodedFormEntity formEntity=<span class="keyword">new</span> UrlEncodedFormEntity(params,<span class="string">"utf8"</span>);</span><br><span class="line"></span><br><span class="line">       <span class="comment">//设置表单的Entity实体对象到Post请求中</span></span><br><span class="line">       httpPost.setEntity(formEntity);</span><br><span class="line"></span><br><span class="line">       System.out.println(<span class="string">"发起请求的信息："</span>+httpPost);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>如果是无参数的GET请求，则直接使用构造方法<font color="red">HttpPost(String url)</font>创建HttpPost对象即可；<br>如果是带参数POST请求，先构建HttpEntity对象并设置请求参数，然后调用<font color="red">setEntity(HttpEntity entity)</font>创建HttpPost对象</p>
+<h3 id="3-连接池"><a href="#3-连接池" class="headerlink" title="3.连接池"></a>3.连接池</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">package</span> com.ljc.crawler.test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.http.HttpEntity;</span><br><span class="line"><span class="keyword">import</span> org.apache.http.client.HttpClient;</span><br><span class="line"><span class="keyword">import</span> org.apache.http.client.methods.CloseableHttpResponse;</span><br><span class="line"><span class="keyword">import</span> org.apache.http.client.methods.HttpGet;</span><br><span class="line"><span class="keyword">import</span> org.apache.http.impl.client.CloseableHttpClient;</span><br><span class="line"><span class="keyword">import</span> org.apache.http.impl.client.HttpClients;</span><br><span class="line"><span class="keyword">import</span> org.apache.http.impl.conn.PoolingHttpClientConnectionManager;</span><br><span class="line"><span class="keyword">import</span> org.apache.http.util.EntityUtils;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> 林军成</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@data</span> -13:11</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HttpPoolTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//创建连接池管理器</span></span><br><span class="line">        PoolingHttpClientConnectionManager cm=<span class="keyword">new</span> PoolingHttpClientConnectionManager();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//设置连接数</span></span><br><span class="line">        cm.setMaxTotal(<span class="number">100</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//设置每个主机的最大连接数</span></span><br><span class="line">        cm.setDefaultMaxPerRoute(<span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//使用连接池管理器发起请求</span></span><br><span class="line">        doGet(cm);</span><br><span class="line">        doGet(cm);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(PoolingHttpClientConnectionManager cm)</span>  </span>&#123;</span><br><span class="line">        <span class="comment">//不是每次创建新的HttpClient，而是从连接池中获取HttpClient对象</span></span><br><span class="line">        CloseableHttpClient httpClient= HttpClients.custom().setConnectionManager(cm).build();</span><br><span class="line"></span><br><span class="line">        HttpGet httpGet=<span class="keyword">new</span> HttpGet(<span class="string">"http://www.csdn.net"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//使用HttpClient发起请求，获取response</span></span><br><span class="line">        CloseableHttpResponse response=<span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            response = httpClient.execute(httpGet);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//解析响应</span></span><br><span class="line">            <span class="keyword">if</span> (response.getStatusLine().getStatusCode() == <span class="number">200</span>) &#123;</span><br><span class="line">                HttpEntity httpEntity = response.getEntity();</span><br><span class="line">                String content = EntityUtils.toString(httpEntity, <span class="string">"utf8"</span>);</span><br><span class="line"></span><br><span class="line">                System.out.println(content.length());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">catch</span> (IOException e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span>(response!=<span class="keyword">null</span>)&#123;</span><br><span class="line">                <span class="keyword">try</span>&#123;</span><br><span class="line">                    <span class="comment">// 关闭response,不能关闭HttpClient</span></span><br><span class="line">                    response.close();</span><br><span class="line">                &#125;<span class="keyword">catch</span> (IOException e)&#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="4-请求参数"><a href="#4-请求参数" class="headerlink" title="4.请求参数"></a>4.请求参数</h3><ul>
+<li>有时候因为网络或者目标服务器的原因，请求需要很长的时间才能完成，我们需要自定义相关时间<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//配置请求信息</span></span><br><span class="line">        RequestConfig config=RequestConfig.custom().setConnectTimeout(<span class="number">1000</span>)    <span class="comment">//创建连接的最长时间，单位是毫秒</span></span><br><span class="line">                   .setConnectionRequestTimeout(<span class="number">500</span>)         <span class="comment">//设置获取连接的最长时间，单位是毫秒</span></span><br><span class="line">                   .setSocketTimeout(<span class="number">10</span>*<span class="number">1000</span>)                <span class="comment">//设置数据传输的最长时间，单位是毫秒</span></span><br><span class="line">                   .build();</span><br><span class="line">        <span class="comment">//给请求设置请求信息</span></span><br><span class="line">        httpGet.setConfig(config);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center;">
+  <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.png" alt="lin wechat" style="width: 200px; max-width: 100%;">
+  <div>扫一扫可以关注我哦</div>
+</div>
+
+      
+        
+      
+        <div id="reward-container">
+  <div>恭喜发财</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/wechatpay.png" alt="lin 微信支付">
+        <p>微信支付</p>
+      </div>
+
+  </div>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/java/" rel="tag"><i class="fa fa-tag"></i># java</a>
+            
+              <a href="/tags/爬虫/" rel="tag"><i class="fa fa-tag"></i># 爬虫</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/08/13/spring高级装配/" rel="next" title="spring高级装配">
+                  <i class="fa fa-chevron-left"></i> spring高级装配
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    
+  <div class="comments" id="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80NTk4NC8yMjQ5NQ=="></div>
+  </div>
+  
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1565507189&di=87cd31600d20c600a0e2328cb1af89ea&src=http://img5.duitang.com/uploads/item/201406/11/20140611194517_KWmL5.jpeg"
+      alt="lin">
+  <p class="site-author-name" itemprop="name">lin</p>
+  <div class="site-description motion-element" itemprop="description">狂热的学习者</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/linjuncheng99" title="GitHub &rarr; https://github.com/linjuncheng99" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/linjuncheng99" title="Weibo &rarr; https://weibo.com/linjuncheng99" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+    <div class="links-of-blogroll-title">
+      <i class="fa  fa-fw fa-link"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://csdn.net || rss-square" title="http://csdn.net || rss-square" rel="noopener" target="_blank">CSDN</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://baidu.com || search" title="http://baidu.com || search" rel="noopener" target="_blank">baidu</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://oschina.net" title="http://oschina.net" rel="noopener" target="_blank">开源中国</a>
+        </li>
+      
+    </ul>
+  </div>
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#网络爬虫介绍"><span class="nav-number">1.</span> <span class="nav-text">网络爬虫介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是网络爬虫"><span class="nav-number">1.1.</span> <span class="nav-text">什么是网络爬虫</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#入门程序"><span class="nav-number">1.2.</span> <span class="nav-text">入门程序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-在pom-xml添加配置文件"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.在pom.xml添加配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-创建log4j-properties文件："><span class="nav-number">1.2.2.</span> <span class="nav-text">2.创建log4j.properties文件：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-代码："><span class="nav-number">1.2.3.</span> <span class="nav-text">3.代码：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HttpClient"><span class="nav-number">1.3.</span> <span class="nav-text">HttpClient</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Get请求：带参数"><span class="nav-number">1.3.1.</span> <span class="nav-text">1. Get请求：带参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-POST请求：带参数"><span class="nav-number">1.3.2.</span> <span class="nav-text">2.POST请求：带参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-连接池"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.连接池</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-请求参数"><span class="nav-number">1.3.4.</span> <span class="nav-text">4.请求参数</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lin</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">19k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">17 分钟</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>-->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+    
+<script>
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/schemes/love.js"></script>
+
+</body>
+</html>
