@@ -34,7 +34,7 @@
     sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
     back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
     save_scroll: false,
-    copycode: {"enable":false,"show_result":false,"style":null},
+    copycode: {"enable":true,"show_result":true,"style":null},
     fancybox: false,
     mediumzoom: false,
     lazyload: false,
@@ -56,6 +56,24 @@
     }
   };
 </script>
+
+<script>
+	
+	window.onload = function(){
+		var path = 'https://linjuncheng99.github.io'; //这里要改成你博客的地址
+		var localhostItem = String(window.location).split(path)[1];
+		var LiNode = document.querySelectorAll('#menu > li > a')
+		
+		for(var i = 0; i< LiNode.length;i++){
+			var item = String(LiNode[i].href).split(path)[1];
+			if(item == localhostItem && item != undefined){
+				LiNode[i].setAttribute('style','border-bottom:1px solid black');
+			}
+		}
+	};
+
+</script>
+
 
   <meta name="description" content="狂热的学习者">
 <meta property="og:type" content="website">
@@ -271,7 +289,7 @@
         
           
         
-        嗯..! 目前共计 4 篇日志。 继续努力。
+        嗯..! 目前共计 5 篇日志。 继续努力。
       </span>
       
 
@@ -286,6 +304,39 @@
     <div class="collection-title">
       <h1 class="archive-year" id="archive-year-2019">2019</h1>
     </div>
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h2 class="post-title">
+        
+          <a class="post-title-link" href="/2019/08/15/面向切面的spring/" itemprop="url">
+            
+              <span itemprop="name">面向切面的spring</span>
+            
+          </a>
+        
+      </h2>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated"
+              datetime="2019-08-15T12:31:42+08:00"
+              content="2019-08-15">
+          08-15
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+
+  
+  
+  
+
   
   
 
@@ -457,7 +508,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -534,6 +585,11 @@
       </span>
     
   </div>
+  <div class="cc-license motion-element" itemprop="license">
+    
+  
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
 
 
   <div class="links-of-blogroll motion-element links-of-blogroll-inline">
@@ -602,6 +658,25 @@
   <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>-->
+
+<!-- 在网页底部添加网站运行时间 -->
+<span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+<script>
+    var now = new Date();
+    function createtime() {
+        var grt= new Date("08/11/2019 00:00:00");//此处修改你的建站时间或者网站上线时间
+        now.setTime(now.getTime()+250);
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+        document.getElementById("timeDate").innerHTML = "Run for "+dnum+" Days ";
+        document.getElementById("times").innerHTML = hnum + " Hours " + mnum + " m " + snum + " s";
+    }
+setInterval("createtime()",250);
+</script>
 
         
 <div class="busuanzi-count">

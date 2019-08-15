@@ -34,7 +34,7 @@
     sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
     back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
     save_scroll: false,
-    copycode: {"enable":false,"show_result":false,"style":null},
+    copycode: {"enable":true,"show_result":true,"style":null},
     fancybox: false,
     mediumzoom: false,
     lazyload: false,
@@ -56,6 +56,24 @@
     }
   };
 </script>
+
+<script>
+	
+	window.onload = function(){
+		var path = 'https://linjuncheng99.github.io'; //这里要改成你博客的地址
+		var localhostItem = String(window.location).split(path)[1];
+		var LiNode = document.querySelectorAll('#menu > li > a')
+		
+		for(var i = 0; i< LiNode.length;i++){
+			var item = String(LiNode[i].href).split(path)[1];
+			if(item == localhostItem && item != undefined){
+				LiNode[i].setAttribute('style','border-bottom:1px solid black');
+			}
+		}
+	};
+
+</script>
+
 
   <meta name="keywords" content="java,爬虫">
 <meta property="og:type" content="article">
@@ -427,6 +445,35 @@
 </div>
 
       
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>lin</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://codelin.com/2019/08/13/网络爬虫-基于java/" title="网络爬虫--基于java">http://codelin.com/2019/08/13/网络爬虫-基于java/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+</div>
+
+      
+
+   <div>
+    
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------���Ľ���<i class="fa fa-paw"></i>��л�����Ķ�-------------</div>
+    
+</div>
+
+    
+   </div>
+
+
 
       <footer class="post-footer">
           
@@ -455,6 +502,10 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/08/15/面向切面的spring/" rel="prev" title="面向切面的spring">
+                  面向切面的spring <i class="fa fa-chevron-right"></i>
+                </a>
               
             </div>
           </div>
@@ -518,7 +569,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">5</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -594,6 +645,11 @@
         <a href="https://weibo.com/linjuncheng99" title="Weibo &rarr; https://weibo.com/linjuncheng99" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
       </span>
     
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    
+  
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
   </div>
 
 
@@ -680,6 +736,25 @@
   <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
   <span class="post-meta-divider">|</span>
   <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>-->
+
+<!-- 在网页底部添加网站运行时间 -->
+<span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+<script>
+    var now = new Date();
+    function createtime() {
+        var grt= new Date("08/11/2019 00:00:00");//此处修改你的建站时间或者网站上线时间
+        now.setTime(now.getTime()+250);
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+        document.getElementById("timeDate").innerHTML = "Run for "+dnum+" Days ";
+        document.getElementById("times").innerHTML = hnum + " Hours " + mnum + " m " + snum + " s";
+    }
+setInterval("createtime()",250);
+</script>
 
         
 <div class="busuanzi-count">

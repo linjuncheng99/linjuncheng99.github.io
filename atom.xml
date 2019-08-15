@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://codelin.com/"/>
-  <updated>2019-08-14T05:51:47.364Z</updated>
+  <updated>2019-08-15T04:31:42.603Z</updated>
   <id>http://codelin.com/</id>
   
   <author>
@@ -15,6 +15,20 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>面向切面的spring</title>
+    <link href="http://codelin.com/2019/08/15/%E9%9D%A2%E5%90%91%E5%88%87%E9%9D%A2%E7%9A%84spring/"/>
+    <id>http://codelin.com/2019/08/15/面向切面的spring/</id>
+    <published>2019-08-15T04:31:42.000Z</published>
+    <updated>2019-08-15T04:31:42.603Z</updated>
+    
+    <summary type="html">
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>网络爬虫--基于java</title>
