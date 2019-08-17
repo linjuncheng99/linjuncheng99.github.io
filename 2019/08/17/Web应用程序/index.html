@@ -84,7 +84,7 @@
 <meta property="og:description" content="spring MVC基于模型-控制器-视图（Model-Controller-View，MVC）模式实现，它能帮助你构建像spring框架的灵活和松耦合的Web应用程序。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://images2015.cnblogs.com/blog/791227/201611/791227-20161125140338768-995727439.png">
-<meta property="og:updated_time" content="2019-08-17T08:01:11.834Z">
+<meta property="og:updated_time" content="2019-08-17T08:22:35.156Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="构建Spring Web应用程序">
 <meta name="twitter:description" content="spring MVC基于模型-控制器-视图（Model-Controller-View，MVC）模式实现，它能帮助你构建像spring框架的灵活和松耦合的Web应用程序。">
@@ -310,7 +310,7 @@
                 
               
 
-              <time title="创建时间：2019-08-17 12:47:03 / 修改时间：16:01:11" itemprop="dateCreated datePublished" datetime="2019-08-17T12:47:03+08:00">2019-08-17</time>
+              <time title="创建时间：2019-08-17 12:47:03 / 修改时间：16:22:35" itemprop="dateCreated datePublished" datetime="2019-08-17T12:47:03+08:00">2019-08-17</time>
             </span>
           
             
@@ -348,7 +348,7 @@
               
                 <span class="post-meta-item-text">本文字数：</span>
               
-              <span>6.9k</span>
+              <span>11k</span>
             </span>
           
             <span class="post-meta-item" title="阅读时长">
@@ -358,7 +358,7 @@
               
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
               
-              <span>6 分钟</span>
+              <span>10 分钟</span>
             </span>
           
 
@@ -481,6 +481,55 @@
 
 </li>
 </ul>
+<h2 id="接受请求的输入"><a href="#接受请求的输入" class="headerlink" title="接受请求的输入"></a>接受请求的输入</h2><p>Spring MVC提供了如下方式供客户端传递数据到控制器处理方法：</p>
+<ul>
+<li>查询参数：Query parameters</li>
+<li>表单参数: Form parameters</li>
+<li>路径变量：Path variables</li>
+</ul>
+<h3 id="1-处理查询参数"><a href="#1-处理查询参数" class="headerlink" title="1. 处理查询参数"></a>1. 处理查询参数</h3><p>Spittr应用的一个需求就是要对spittle列表分页展示，但是SpittleController仅仅展示最近的spittle。如果要让用户可以每次得到一页的spittle记录，那么就需要让用户可以通过某种方式将他们想看的spittle记录的参数传递到后台。</p>
+<p>在浏览spittle时，如果想要查看下一页的spittle，那么就需要传递比当前页的最后一个spittle的id小一位的id，也可以传递想要展示的spittle的数量。</p>
+<p>为了实现分页，需要编写一个控制器满足：</p>
+<ul>
+<li><p>before参数，结果中的spittle的id都要在这个参数之前；</p>
+</li>
+<li><p>count参数，结果中要包含的spittle的个数</p>
+</li>
+</ul>
+<p>测试方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(method=RequestMethod.GET)</span><br><span class="line"><span class="function"><span class="keyword">public</span> List&lt;Spittle&gt; <span class="title">spittles</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        @RequestParam(value=<span class="string">"max"</span>, defaultValue=MAX_LONG_AS_STRING)</span> <span class="keyword">long</span> max, </span></span><br><span class="line"><span class="function">        @<span class="title">RequestParam</span><span class="params">(value=<span class="string">"count"</span>, defaultValue=<span class="string">"20"</span>)</span> <span class="keyword">int</span> count) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> spittleRepository.findSpittles(max, count);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-通过路径参数接受输入"><a href="#2-通过路径参数接受输入" class="headerlink" title="2. 通过路径参数接受输入"></a>2. 通过路径参数接受输入</h3><p>假设现在应用需要展示单独的一篇Spittle，那么就需要一个id作为查询参数，对应的处理方法可以是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"show"</span>, method=RequestMethod.GET)</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">showSpittle</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        @RequestParam(<span class="string">"spittle_id"</span>)</span> <span class="keyword">long</span> spittleId,</span></span><br><span class="line"><span class="function">        Model model</span></span><br><span class="line"><span class="function">        ) </span>&#123;</span><br><span class="line">    model.addAttribute(spittleRepository.findOne(spittleId));</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"spittle"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>为了满足路径参数，Spring MVC允许在@RequestMapping路径中使用占位符（需要用大括号包围），下面是使用占位符来接受一个id作为路径的一部分：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/&#123;spittleId&#125;"</span>, method=RequestMethod.GET)</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">spittle</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        @PathVariable(<span class="string">"spittleId"</span>)</span> <span class="keyword">long</span> spittleId,</span></span><br><span class="line"><span class="function">        Model model</span></span><br><span class="line"><span class="function">        ) </span>&#123;</span><br><span class="line">    model.addAttribute(spittleRepository.findOne(spittleId));</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"spittle"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>spittle()方法的spittleId入参使用了@PathVariable(“spittleId”)注解，表明请求中占位符位置的值都会被传送到handler的spittleId参数。@RequestMapping中value属性的占位符必须和@PathVariable包裹的参数一致。如果@PathVariable中没有给定参数，那么将默认使用入参的册数参数名。即可以使用下面的方法：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/&#123;spittleId&#125;"</span>, method=RequestMethod.GET)</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">spittle</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        @PathVariable <span class="keyword">long</span> spittleId,</span></span></span><br><span class="line"><span class="function"><span class="params">        Model model</span></span></span><br><span class="line"><span class="function"><span class="params">        )</span> </span>&#123;</span><br><span class="line">    model.addAttribute(spittleRepository.findOne(spittleId));</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"spittle"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-表单"><a href="#3-表单" class="headerlink" title="3.表单"></a>3.表单</h3><h4 id="3-1-处理表单"><a href="#3-1-处理表单" class="headerlink" title="3.1 处理表单"></a>3.1 处理表单</h4><ul>
+<li>对于表单有两种处理方式：展示表单以及处理用户提交的表单数据。在Spittr中，需要提供一个供新用户进行注册的表单。</li>
+</ul>
+<p>SpitterController：展示用户注册表单</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> web.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Controller;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMethod;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/spitter"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpittleController</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 处理来自/spitter/register的get请求</span></span><br><span class="line">    <span class="meta">@RequestMapping</span>(value = <span class="string">"/register"</span>, method = RequestMethod.GET)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">showRegistrationForm</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"registerForm"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>showRegistrationForm方法的@RequestMapping注解，以及类级别的注解@RequestMapping，表明了这个方法会处理来自/spitter/register的get请求，该方法仅仅返回了一个名为registerForm的逻辑视图。根据之前在InternalResourceViewResolver中的配置，这个逻辑视图会导向到/WEB-INF/views/registerForm.jsp该界面。</p>
+<h4 id="3-2-编写表单处理控制器"><a href="#3-2-编写表单处理控制器" class="headerlink" title="3.2 编写表单处理控制器"></a>3.2 编写表单处理控制器</h4><ul>
+<li>在处理POST请求时，控制器需要接受表单数据并且将这些数据存储为一个Spitter对象。为了避免重复提交，应该重定向到一个新的界面：用户信息页。在处理post请求时，一个聪明的做法就是在处理完成后发送一个重定向的请求，从而可以避免重复提交。</li>
+</ul>
+<p>下面来实现控制器方法，从而可以处理注册请求。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> SpitterRepository spitterRepository;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SpitterController</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 注入SpitterRepository</span></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SpitterController</span><span class="params">(SpitterRepository spitterRepository)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.spitterRepository = spitterRepository;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">processRegistration</span><span class="params">(Spitter spitter)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 保存Spitter</span></span><br><span class="line">        spitterRepository.save(spitter);</span><br><span class="line">        <span class="comment">// 重定向到新的页面</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">"redirect:/spitter/"</span> + spitter.getUsername();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>processRegistration方法使用Spitter对象作为入参，该对象的属性会从请求中填充。该方法中调用了spitterRepository的save方法对Spitter对象进行存储。最后返回了一个带有redirect:的字符串。</p>
+<p>当InternalResourceViewResolver遇到redirect:时，它会自动地将其当做一个重定向请求，从而可以重定向到用户详情页面，如/spitter/xiaoming。</p>
+<p>同时，InternalResourceViewResolver也可以识别前缀forward:，这种情况下，请求会被转向到给定的URL地址。</p>
+<h4 id="3-4-参数检验"><a href="#3-4-参数检验" class="headerlink" title="3.4 参数检验"></a>3.4 参数检验</h4><p>从Spring3.0开始，Spring支持Java校验api，从而可以从而可以不需要添加其他配置，仅仅需要有一个Java API 的实现，如Hibernate Validator。</p>
+<p>Java Validation API定义了许多注解，可以使用这些注解来约束参数的值，所有的注解都在包javax.validation.constraints中。</p>
 
     </div>
 
@@ -740,7 +789,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#spring-MVC起步"><span class="nav-number">1.</span> <span class="nav-text">spring MVC起步</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-跟踪spring-MVC的请求"><span class="nav-number">1.1.</span> <span class="nav-text">1. 跟踪spring MVC的请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-搭建spring-MVC"><span class="nav-number">1.2.</span> <span class="nav-text">2.搭建spring MVC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-配置DispatcherServlet"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 配置DispatcherServlet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-启用springMVC"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 启用springMVC</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spittr应用介绍"><span class="nav-number">1.3.</span> <span class="nav-text">Spittr应用介绍</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编写基本的控制器"><span class="nav-number">2.</span> <span class="nav-text">编写基本的控制器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-测试控制器"><span class="nav-number">2.1.</span> <span class="nav-text">1. 测试控制器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-传递模型数据到视图中"><span class="nav-number">2.2.</span> <span class="nav-text">2. 传递模型数据到视图中</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#spring-MVC起步"><span class="nav-number">1.</span> <span class="nav-text">spring MVC起步</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-跟踪spring-MVC的请求"><span class="nav-number">1.1.</span> <span class="nav-text">1. 跟踪spring MVC的请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-搭建spring-MVC"><span class="nav-number">1.2.</span> <span class="nav-text">2.搭建spring MVC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-配置DispatcherServlet"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 配置DispatcherServlet</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-启用springMVC"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 启用springMVC</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spittr应用介绍"><span class="nav-number">1.3.</span> <span class="nav-text">Spittr应用介绍</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编写基本的控制器"><span class="nav-number">2.</span> <span class="nav-text">编写基本的控制器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-测试控制器"><span class="nav-number">2.1.</span> <span class="nav-text">1. 测试控制器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-传递模型数据到视图中"><span class="nav-number">2.2.</span> <span class="nav-text">2. 传递模型数据到视图中</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#接受请求的输入"><span class="nav-number">3.</span> <span class="nav-text">接受请求的输入</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-处理查询参数"><span class="nav-number">3.1.</span> <span class="nav-text">1. 处理查询参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-通过路径参数接受输入"><span class="nav-number">3.2.</span> <span class="nav-text">2. 通过路径参数接受输入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-表单"><span class="nav-number">3.3.</span> <span class="nav-text">3.表单</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-处理表单"><span class="nav-number">3.3.1.</span> <span class="nav-text">3.1 处理表单</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-编写表单处理控制器"><span class="nav-number">3.3.2.</span> <span class="nav-text">3.2 编写表单处理控制器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-参数检验"><span class="nav-number">3.3.3.</span> <span class="nav-text">3.4 参数检验</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
@@ -776,14 +825,14 @@
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">35k</span>
+    <span title="站点总字数">39k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">32 分钟</span>
+    <span title="站点阅读时长">35 分钟</span>
 </div>
 
 <!--
