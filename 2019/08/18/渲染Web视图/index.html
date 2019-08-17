@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon32.ico?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon16.ico?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link rel="stylesheet" href="/lib/pace/pace-theme-center-atom.min.css?v=1.0.2">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":true,"scrollpercent":true},
+    save_scroll: false,
+    copycode: {"enable":true,"show_result":true,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+<script>
+	
+	window.onload = function(){
+		var path = 'https://linjuncheng99.github.io'; //这里要改成你博客的地址
+		var localhostItem = String(window.location).split(path)[1];
+		var LiNode = document.querySelectorAll('#menu > li > a')
+		
+		for(var i = 0; i< LiNode.length;i++){
+			var item = String(LiNode[i].href).split(path)[1];
+			if(item == localhostItem && item != undefined){
+				LiNode[i].setAttribute('style','border-bottom:1px solid black');
+			}
+		}
+	};
+
+</script>
+
+
+  <meta name="description" content="本章主要内容：  将数据模型渲染为HTML  使用JSP视图">
+<meta name="keywords" content="springMVC,spring">
+<meta property="og:type" content="article">
+<meta property="og:title" content="渲染Web视图">
+<meta property="og:url" content="http://codelin.com/2019/08/18/渲染Web视图/index.html">
+<meta property="og:site_name" content="CodeLin">
+<meta property="og:description" content="本章主要内容：  将数据模型渲染为HTML  使用JSP视图">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-08-17T23:43:09.427Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="渲染Web视图">
+<meta name="twitter:description" content="本章主要内容：  将数据模型渲染为HTML  使用JSP视图">
+  <link rel="alternate" href="/atom.xml" title="CodeLin" type="application/atom+xml">
+  <link rel="canonical" href="http://codelin.com/2019/08/18/渲染Web视图/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>渲染Web视图 | CodeLin</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+    <a href="https://github.com/linjuncheng99" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#64CEAA; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CodeLin</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">身体和灵魂总有一个在路上</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://codelin.com/2019/08/18/渲染Web视图/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="lin">
+      <meta itemprop="description" content="coder&dreamer">
+      <meta itemprop="image" content="https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1565507189&di=87cd31600d20c600a0e2328cb1af89ea&src=http://img5.duitang.com/uploads/item/201406/11/20140611194517_KWmL5.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CodeLin">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">渲染Web视图
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-18 07:08:17 / 修改时间：07:43:09" itemprop="dateCreated datePublished" datetime="2019-08-18T07:08:17+08:00">2019-08-18</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/springMVC/" itemprop="url" rel="index"><span itemprop="name">springMVC</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">本文字数：</span>
+              
+              <span>5.6k</span>
+            </span>
+          
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              
+              <span>5 分钟</span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本章主要内容：</p>
+<ul>
+<li><p>将数据模型渲染为HTML</p>
+</li>
+<li><p>使用JSP视图</p>
+</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="理解视图解析"><a href="#理解视图解析" class="headerlink" title="理解视图解析"></a>理解视图解析</h2><ul>
+<li>将控制器中请求处理的逻辑和视图中的渲染实现解耦是Spring MVC 的一个重要特性。如果控制器中的方法直接负责产生HTML的话，就很难在不影响请求处理逻辑的前提下，维护和更新视图。控制器方法和视图的实现会在模型内容上达成一致，这是两者的最大关联，除此之外，两者应该保持足够的距离。但是，如果控制器只通过逻辑视图来了解视图的话，那Spring该如何确定使用哪一个视图实现来渲染模型呢？这就是Spring视图解析器的任务了</li>
+</ul>
+<p>Spring MVC 定义了一个名为ViewResolver的接口，它大致如下所示：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.web.servlet;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Locale;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ViewResolver</span> </span>&#123;</span><br><span class="line">    <span class="function">View <span class="title">resolveViewName</span><span class="params">(String var1, Locale var2)</span> <span class="keyword">throws</span> Exception</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当给resolveViewName()方法传入一个视图名和Locale对象时，它会返回一个View实例。View是另外一个接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">View</span> </span>&#123;</span><br><span class="line">    String RESPONSE_STATUS_ATTRIBUTE = View.class.getName() + <span class="string">".responseStatus"</span>;</span><br><span class="line">    String PATH_VARIABLES = View.class.getName() + <span class="string">".pathVariables"</span>;</span><br><span class="line">    String SELECTED_CONTENT_TYPE = View.class.getName() + <span class="string">".selectedContentType"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">String <span class="title">getContentType</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">render</span><span class="params">(Map&lt;String, ?&gt; model, HttpServletRequest request, HttpServletResponse response)</span> <span class="keyword">throws</span> Exception</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>View接口的任务就是接受模型以及Servlet的request和response对象，并将输出结果渲染到response中</p>
+<h2 id="创建JSP视图"><a href="#创建JSP视图" class="headerlink" title="创建JSP视图"></a>创建JSP视图</h2><p>Spring提供了两种支持JSP视图的方式：</p>
+</li>
+<li><p>InternalResourceViewResolver会将视图名解析为JSP文件。另外，如果在JSP页面中使用了JSP标准签库（JavaServer Pages Standard Tag library，JSTL）的话，InternalResourceViewResolver能够将视图名解析为JstlView形式的JSP文件，从而将JSTL本地化和资源bundle变量暴露给JSTL的格式化(formatting)和信息(message)标签</p>
+</li>
+<li><p>•Spring提供了连个JSP标签库，一个用于表单到模型的绑定，另一个提供了通用的工具类特性</p>
+<h3 id="1-配置使用于JSP的视图解析器"><a href="#1-配置使用于JSP的视图解析器" class="headerlink" title="1.配置使用于JSP的视图解析器"></a>1.配置使用于JSP的视图解析器</h3></li>
+<li><p>有一些视图解析器，如ResourceBundleViewResolver会直接将逻辑视图名称映射为特定的View接口实现，而InternalResourceViewResolver所采取的方式并不那么直接。它遵循一种约定，会在视图名称上添加前缀和后缀，进而确定一个Web应用中视图资源的物理路径。</p>
+<h4 id="1-1-java配置"><a href="#1-1-java配置" class="headerlink" title="1.1 java配置"></a>1.1 java配置</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//配置JSP视图解析器</span></span><br><span class="line">   <span class="meta">@Bean</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> ViewResolver <span class="title">viewResolver</span><span class="params">()</span></span>&#123;</span><br><span class="line">       InternalResourceViewResolver resolver=<span class="keyword">new</span> InternalResourceViewResolver();</span><br><span class="line">       resolver.setPrefix(<span class="string">"/WEB-INF/views/"</span>);</span><br><span class="line">       resolver.setSuffix(<span class="string">".jsp"</span>);</span><br><span class="line">       resolver.setExposeContextBeansAsAttributes(<span class="keyword">true</span>);</span><br><span class="line">       <span class="keyword">return</span> resolver;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="1-2-使用XML的Spring配置："><a href="#1-2-使用XML的Spring配置：" class="headerlink" title="1.2 使用XML的Spring配置："></a>1.2 使用XML的Spring配置：</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">"viewResolver"</span> </span></span><br><span class="line"><span class="tag">          <span class="attr">class</span>=<span class="string">"org.springframework.web.servlet.view.InternalResourceViewResolver"</span> </span></span><br><span class="line"><span class="tag">          <span class="attr">p:prefix</span>=<span class="string">"/WEB-INF/views/"</span> </span></span><br><span class="line"><span class="tag">          <span class="attr">p:suffix</span>=<span class="string">".jsp"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>InternalResourceViewResolver配置就绪后，它就会将逻辑视图名解析为JSP文件，如下所示：</p>
+<ul>
+<li><p>home将会解析为”/WEB-INF/views/home.jsp”</p>
+</li>
+<li><p>productList将会解析为”/WEB-INF/views/productList.jsp”</p>
+</li>
+</ul>
+<h3 id="2-使用Spring的JSP库"><a href="#2-使用Spring的JSP库" class="headerlink" title="2. 使用Spring的JSP库"></a>2. 使用Spring的JSP库</h3><h4 id="2-1-将表单绑定到模型上"><a href="#2-1-将表单绑定到模型上" class="headerlink" title="2.1 将表单绑定到模型上"></a>2.1 将表单绑定到模型上</h4><ul>
+<li><p>Spring中的表单绑定JSP标签库包含了14个标签，它们中的大多数都是用来渲染HTML中的表单标签。但是，它们与原生HTML表单标签的区别在于它们会绑定模型中的一个对象，能够根据模型中对象的属性填充值。标签库还包含了一个为用户展示错误的标签，它会将错误信息渲染到最终的HTML上。 </p>
+<p>为了使用表单绑定标签，需要在JSP页面中对其进行声明：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ taglib prefix=<span class="string">"sf"</span> uri=<span class="string">"http://www.springframework.org/tags/form"</span> %&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>在注册JSP中使用这些标签后，代码如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;sf:form method=<span class="string">"post"</span> commandName=<span class="string">"spitter"</span>&gt;</span><br><span class="line">    First Name: &lt;sf:input path=<span class="string">"firstName"</span>/&gt;&lt;br/&gt;</span><br><span class="line">    Last Name: &lt;sf:input path=<span class="string">"lastName"</span>/&gt;&lt;br/&gt;</span><br><span class="line">    Username: &lt;sf:input path=<span class="string">"username"</span>/&gt;</span><br><span class="line">    Password: &lt;sf:input path=<span class="string">"password"</span>/&gt;</span><br><span class="line">    &lt;input type=<span class="string">"submit"</span> value=<span class="string">"Register"</span>/&gt;</span><br><span class="line">&lt;/sf:form&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a href="sf:form" target="_blank" rel="noopener">sf:form</a>会渲染一个HTML的form标签，但它也会通过commandName属性构建针对某个模型对象的上下文信息。在其他的表单绑定标签中，会引用这个模型对象的属性。<br>需要注意的是，我们将commandName属性设置为spitter，因此，在模型中必须有一个key为spitter的对象，否则的话，表单不能正常渲染（会出现JSP错误）。这意味着我们需要修改一下SpitterController，以确保模型中存在spitter为key的Spitter对象：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value = <span class="string">"/register"</span>, method = RequestMethod.GET)</span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">showRegistrationrForm</span><span class="params">(Model model)</span></span>&#123;</span><br><span class="line">    model.addAttribute(<span class="keyword">new</span> Spitter());</span><br><span class="line">    <span class="keyword">return</span> <span class="string">"registerForm"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<ul>
+<li>回到这个表单，前三个输入域将HTMLinput标签改成了sf:input。这个标签会渲染成一个HTMLinput标签，其中type属性设置为”text”。我们在这里设置了path属性，input标签的value属性值将会设置为模型对象中path属性所对应的值。对于password输入域，我们使用sf:password来代替sf:input。sf:password与sf:input类似，但是它所渲染的HTML的input标签中，会将type属性设置为password，这样当输入的时候，它的值不会明文显示。 </li>
+</ul>
+<h4 id="2-2-展现错误"><a href="#2-2-展现错误" class="headerlink" title="2.2 展现错误"></a>2.2 展现错误</h4><ul>
+<li>如果存在校验错误的话，请求中会包含错误的详细信息，这些信息是与模型数据放到一起的。我们所需要做的就是到模型中将这些数据抽取出来，并展现给用户。sf:errors能够让这项任务变得简单：</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;sf:form method=<span class="string">"post"</span> commandName=<span class="string">"spitter"</span>&gt;</span><br><span class="line">    First Name: &lt;sf:input path=<span class="string">"firstName"</span>/&gt;</span><br><span class="line">    &lt;sf:errors path=<span class="string">"firstName"</span>/&gt;&lt;br/&gt;</span><br><span class="line">    Last Name: &lt;sf:input path=<span class="string">"lastName"</span>/&gt;</span><br><span class="line">    &lt;sf:errors path=<span class="string">"lastName"</span>/&gt;&lt;br/&gt;</span><br><span class="line">    Username: &lt;sf:input path=<span class="string">"username"</span>/&gt;</span><br><span class="line">    &lt;sf:errors path=<span class="string">"username"</span>/&gt;&lt;br/&gt;</span><br><span class="line">    Password: &lt;sf:password path=<span class="string">"password"</span>/&gt;</span><br><span class="line">    &lt;sf:errors path=<span class="string">"password"</span>/&gt;&lt;br/&gt;</span><br><span class="line">    &lt;input type=<span class="string">"submit"</span> value=<span class="string">"Register"</span>/&gt;</span><br><span class="line">&lt;/sf:form&gt;</span><br></pre></td></tr></table></figure>
+
+<p> 在这里sf:errors的path属性设置成其对应需要展示的sf:input的path属性值，也就指定了要显示Spitter模型对象中哪个属性的错误信息。如果绑定的属性没有任何错误的话，那么sf:errors不会渲染任何东西。<br>现在，我们已经可以为用户展现错误信息了，这样他们就能够修正这些错误了。我们还可以更进一步，修改错误的样式，使其更加突出显示。为了做到这一点，可以设置其cssClass属性：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;sf:form method=<span class="string">"post"</span> commandName=<span class="string">"spitter"</span>&gt;</span><br><span class="line">    First Name: &lt;sf:input path=<span class="string">"firstName"</span>/&gt;</span><br><span class="line">    &lt;sf:errors path=<span class="string">"firstName"</span> cssClass=<span class="string">"error"</span>/&gt;&lt;br/&gt;</span><br><span class="line">    Last Name: &lt;sf:input path=<span class="string">"lastName"</span>/&gt;</span><br><span class="line">    &lt;sf:errors path=<span class="string">"lastName"</span> cssClass=<span class="string">"error"</span>/&gt;&lt;br/&gt;</span><br><span class="line">    Username: &lt;sf:input path=<span class="string">"username"</span>/&gt;</span><br><span class="line">    &lt;sf:errors path=<span class="string">"username"</span> cssClass=<span class="string">"error"</span>/&gt;&lt;br/&gt;</span><br><span class="line">    Password: &lt;sf:password path=<span class="string">"password"</span>/&gt;</span><br><span class="line">    &lt;sf:errors path=<span class="string">"password"</span> cssClass=<span class="string">"error"</span>/&gt;&lt;br/&gt;</span><br><span class="line">    &lt;input type=<span class="string">"submit"</span> value=<span class="string">"Register"</span>/&gt;</span><br><span class="line">&lt;/sf:form&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-3-创建URL"><a href="#2-3-创建URL" class="headerlink" title="2.3 创建URL"></a>2.3 创建URL</h4><ul>
+<li><p>s:url标签的主要任务是创建URL，然后将其赋值给一个变量或者渲染到响应中。它是JSTL中c:url标签的替代者，但是它有自己的特殊技巧。<br>按照其最简单的形式s:url会接受一个相当于Servlet上线文的URL，并在渲染的时候预先添加上Servlet上下文路径。例如：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"&lt;s:url value="</span>/<span class="attr">spitter</span>/<span class="attr">register</span>"/&gt;</span>"&gt;Register<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>另外，还可以使用s:url创建URL，并将其赋值给一个变量供模板在稍后使用：</p>
+</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">s:url</span> <span class="attr">value</span>=<span class="string">"/spitter/register"</span> <span class="attr">var</span>=<span class="string">"registerUrl"</span>&gt;</span><span class="tag">&lt;/<span class="name">s:url</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"$&#123;registerUrl&#125;"</span>&gt;</span>Register<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>默认情况下，URL是在页面作用域内创建的。但是通过设置scope属性，我们可以让s:url在应用作用域内、会话作用域内或请求作用域内创建URL：</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">s:url</span> <span class="attr">value</span>=<span class="string">"/spitter/register"</span> <span class="attr">var</span>=<span class="string">"registerUrl"</span> <span class="attr">scope</span>=<span class="string">"request"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>如果希望在URL上添加参数的话，那么你可以使用s:param标签:<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">s:url</span> <span class="attr">value</span>=<span class="string">"/spitter/register"</span> <span class="attr">var</span>=<span class="string">"registerUrl"</span> <span class="attr">scope</span>=<span class="string">"request"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">s:param</span> <span class="attr">name</span>=<span class="string">"max"</span> <span class="attr">value</span>=<span class="string">"60"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">s:param</span> <span class="attr">name</span>=<span class="string">"count"</span> <span class="attr">value</span>=<span class="string">"20"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">s:url</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center;">
+  <img id="wechat_subscriber_qcode" src="/images/wechat-qcode.png" alt="lin wechat" style="width: 200px; max-width: 100%;">
+  <div>扫一扫可以关注我哦</div>
+</div>
+
+      
+        
+      
+        <div id="reward-container">
+  <div>恭喜发财</div>
+  <button id="reward-button" disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+        
+      
+      <div style="display: inline-block">
+        <img src="/images/wechatpay.png" alt="lin 微信支付">
+        <p>微信支付</p>
+      </div>
+
+  </div>
+</div>
+
+      
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>lin</li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://codelin.com/2019/08/18/渲染Web视图/" title="渲染Web视图">http://codelin.com/2019/08/18/渲染Web视图/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！</li>
+</ul>
+</div>
+
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/springMVC/" rel="tag"># springMVC</a>
+            
+              <a href="/tags/spring/" rel="tag"># spring</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/08/17/Web应用程序/" rel="next" title="构建Spring Web应用程序">
+                  <i class="fa fa-chevron-left"></i> 构建Spring Web应用程序
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    
+  <div class="comments" id="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80NTk4NC8yMjQ5NQ=="></div>
+  </div>
+  
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1565507189&di=87cd31600d20c600a0e2328cb1af89ea&src=http://img5.duitang.com/uploads/item/201406/11/20140611194517_KWmL5.jpeg"
+      alt="lin">
+  <p class="site-author-name" itemprop="name">lin</p>
+  <div class="site-description motion-element" itemprop="description">coder&dreamer</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/linjuncheng99" title="GitHub &rarr; https://github.com/linjuncheng99" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://weibo.com/linjuncheng99" title="Weibo &rarr; https://weibo.com/linjuncheng99" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+    
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    
+  
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/zh-Hans" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+    <div class="links-of-blogroll-title">
+      <i class="fa  fa-fw fa-link"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://csdn.net || rss-square" title="http://csdn.net || rss-square" rel="noopener" target="_blank">CSDN</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://baidu.com || search" title="http://baidu.com || search" rel="noopener" target="_blank">baidu</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://oschina.net" title="http://oschina.net" rel="noopener" target="_blank">开源中国</a>
+        </li>
+      
+    </ul>
+  </div>
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#理解视图解析"><span class="nav-number">1.</span> <span class="nav-text">理解视图解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建JSP视图"><span class="nav-number">2.</span> <span class="nav-text">创建JSP视图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-配置使用于JSP的视图解析器"><span class="nav-number">2.1.</span> <span class="nav-text">1.配置使用于JSP的视图解析器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-java配置"><span class="nav-number">2.1.1.</span> <span class="nav-text">1.1 java配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-使用XML的Spring配置："><span class="nav-number">2.1.2.</span> <span class="nav-text">1.2 使用XML的Spring配置：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-使用Spring的JSP库"><span class="nav-number">2.2.</span> <span class="nav-text">2. 使用Spring的JSP库</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-将表单绑定到模型上"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.1 将表单绑定到模型上</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-展现错误"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2 展现错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-创建URL"><span class="nav-number">2.2.3.</span> <span class="nav-text">2.3 创建URL</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          
+            <span id="scrollpercent"><span>0</span>%</span>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">lin</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    
+    <span title="站点总字数">45k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    
+    <span title="站点阅读时长">41 分钟</span>
+</div>
+
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0</div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.3.0</div>-->
+
+<!-- 在网页底部添加网站运行时间 -->
+<span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span>
+<script>
+    var now = new Date();
+    function createtime() {
+        var grt= new Date("08/11/2019 00:00:00");//此处修改你的建站时间或者网站上线时间
+        now.setTime(now.getTime()+250);
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+        document.getElementById("timeDate").innerHTML = "Run for "+dnum+" Days ";
+        document.getElementById("times").innerHTML = hnum + " Hours " + mnum + " m " + snum + " s";
+    }
+setInterval("createtime()",250);
+</script>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+    
+<script>
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+
+  <!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/schemes/love.js"></script>
+
+
+<!-- 插入歌曲播放功能 -->
+<link rel="stylesheet" href="/dist/APlayer.min.css">
+<div id="aplayer"></div>
+<script type="text/javascript" src="/dist/APlayer.min.js"></script>
+<script type="text/javascript" src="/dist/music.js"></script>
+
+
+</body>
+</html>
