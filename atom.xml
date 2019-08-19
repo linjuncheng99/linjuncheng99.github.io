@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://codelin.com/"/>
-  <updated>2019-08-17T23:43:09.427Z</updated>
+  <updated>2019-08-18T12:20:27.263Z</updated>
   <id>http://codelin.com/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>springMVC的高级技术</title>
+    <link href="http://codelin.com/2019/08/18/springMVC%E7%9A%84%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF/"/>
+    <id>http://codelin.com/2019/08/18/springMVC的高级技术/</id>
+    <published>2019-08-18T12:20:27.000Z</published>
+    <updated>2019-08-18T12:20:27.263Z</updated>
+    
+    <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;link rel=&quot;stylesheet&quot; class=&quot;aplayer-secondary-style-marker&quot; href=&quot;\assets\css\APlayer.min.css&quot;&gt;&lt;script src=&quot;\assets\js\APlayer.min.js&quot; cla
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title>渲染Web视图</title>
@@ -40,9 +61,9 @@
       <category term="springMVC" scheme="http://codelin.com/categories/springMVC/"/>
     
     
-      <category term="springMVC" scheme="http://codelin.com/tags/springMVC/"/>
-    
       <category term="spring" scheme="http://codelin.com/tags/spring/"/>
+    
+      <category term="springMVC" scheme="http://codelin.com/tags/springMVC/"/>
     
   </entry>
   
@@ -66,9 +87,9 @@
       <category term="springMVC" scheme="http://codelin.com/categories/springMVC/"/>
     
     
-      <category term="springMVC" scheme="http://codelin.com/tags/springMVC/"/>
-    
       <category term="spring" scheme="http://codelin.com/tags/spring/"/>
+    
+      <category term="springMVC" scheme="http://codelin.com/tags/springMVC/"/>
     
   </entry>
   

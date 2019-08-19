@@ -147,6 +147,71 @@ const ap = new APlayer({
         lrc: 'http://music.163.com/api/song/media?id=65536',
      },
 
+     {
+      name: "티라미수 케익",
+      artist: 'We Are the Night',
+      url: 'http://music.163.com/song/media/outer/url?id=35447760.mp3',
+      cover: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3025300632,3455263669&fm=26&gp=0.jpg',
+      lrc: 'http://music.163.com/api/song/media?id=35447760',
+   },
+
+   {
+      name: "这个年纪",
+      artist: '齐一',
+      url: 'http://music.163.com/song/media/outer/url?id=35476049.mp3',
+      cover: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3025300632,3455263669&fm=26&gp=0.jpg',
+      lrc: 'http://music.163.com/api/song/media?id=35476049',
+   },
+
+   {
+      name: "삐삐",
+      artist: 'IU',
+      url: 'http://music.163.com/song/media/outer/url?id=1316563427.mp3',
+      cover: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3025300632,3455263669&fm=26&gp=0.jpg',
+      lrc: 'http://music.163.com/api/song/media?id=1316563427',
+   },
+
+   {
+      name: "作曲家",
+      artist: '李荣浩',
+      url: 'http://music.163.com/song/media/outer/url?id=29764562.mp3',
+      cover: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3025300632,3455263669&fm=26&gp=0.jpg',
+      lrc: 'http://music.163.com/api/song/media?id=29764562',
+   },
+
+   {
+      name: "太阳（Cover：邱振哲） ",
+      artist: '野区歌神',
+      url: 'http://music.163.com/song/media/outer/url?id=1339648907.mp3',
+      cover: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3025300632,3455263669&fm=26&gp=0.jpg',
+      lrc: 'http://music.163.com/api/song/media?id=1339648907',
+   },
+
+   {
+      name: "爸爸妈妈 ",
+      artist: '李荣浩',
+      url: 'http://music.163.com/song/media/outer/url?id=407450223.mp3',
+      cover: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3025300632,3455263669&fm=26&gp=0.jpg',
+      lrc: 'http://music.163.com/api/song/media?id=407450223',
+   },
+
+   {
+      name: "年少有为 ",
+      artist: '李荣浩',
+      url: 'http://music.163.com/song/media/outer/url?id=1293886117.mp3',
+      cover: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3025300632,3455263669&fm=26&gp=0.jpg',
+      lrc: 'http://music.163.com/api/song/media?id=1293886117',
+   },
+
+   {
+      name: "我从崖边跌落 ",
+      artist: '谢春花',
+      url: 'http://music.163.com/song/media/outer/url?id=415086030.mp3',
+      cover: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3025300632,3455263669&fm=26&gp=0.jpg',
+      lrc: 'http://music.163.com/api/song/media?id=415086030',
+   },
+
+
     
     ]
 });

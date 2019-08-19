@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[springMVC的高级技术]]></title>
+    <url>%2F2019%2F08%2F18%2FspringMVC%E7%9A%84%E9%AB%98%E7%BA%A7%E6%8A%80%E6%9C%AF%2F</url>
+    <content type="text"><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title><![CDATA[渲染Web视图]]></title>
     <url>%2F2019%2F08%2F18%2F%E6%B8%B2%E6%9F%93Web%E8%A7%86%E5%9B%BE%2F</url>
     <content type="text"><![CDATA[本章主要内容： 将数据模型渲染为HTML 使用JSP视图 理解视图解析 将控制器中请求处理的逻辑和视图中的渲染实现解耦是Spring MVC 的一个重要特性。如果控制器中的方法直接负责产生HTML的话，就很难在不影响请求处理逻辑的前提下，维护和更新视图。控制器方法和视图的实现会在模型内容上达成一致，这是两者的最大关联，除此之外，两者应该保持足够的距离。但是，如果控制器只通过逻辑视图来了解视图的话，那Spring该如何确定使用哪一个视图实现来渲染模型呢？这就是Spring视图解析器的任务了 Spring MVC 定义了一个名为ViewResolver的接口，它大致如下所示： 1234567package org.springframework.web.servlet;import java.util.Locale;public interface ViewResolver &#123; View resolveViewName(String var1, Locale var2) throws Exception;&#125; 当给resolveViewName()方法传入一个视图名和Locale对象时，它会返回一个View实例。View是另外一个接口： 123456789public interface View &#123; String RESPONSE_STATUS_ATTRIBUTE = View.class.getName() + ".responseStatus"; String PATH_VARIABLES = View.class.getName() + ".pathVariables"; String SELECTED_CONTENT_TYPE = View.class.getName() + ".selectedContentType"; String getContentType(); void render(Map&lt;String, ?&gt; model, HttpServletRequest request, HttpServletResponse response) throws Exception;&#125; View接口的任务就是接受模型以及Servlet的request和response对象，并将输出结果渲染到response中 创建JSP视图Spring提供了两种支持JSP视图的方式： InternalResourceViewResolver会将视图名解析为JSP文件。另外，如果在JSP页面中使用了JSP标准签库（JavaServer Pages Standard Tag library，JSTL）的话，InternalResourceViewResolver能够将视图名解析为JstlView形式的JSP文件，从而将JSTL本地化和资源bundle变量暴露给JSTL的格式化(formatting)和信息(message)标签 •Spring提供了连个JSP标签库，一个用于表单到模型的绑定，另一个提供了通用的工具类特性 1.配置使用于JSP的视图解析器 有一些视图解析器，如ResourceBundleViewResolver会直接将逻辑视图名称映射为特定的View接口实现，而InternalResourceViewResolver所采取的方式并不那么直接。它遵循一种约定，会在视图名称上添加前缀和后缀，进而确定一个Web应用中视图资源的物理路径。 1.1 java配置123456789//配置JSP视图解析器 @Bean public ViewResolver viewResolver()&#123; InternalResourceViewResolver resolver=new InternalResourceViewResolver(); resolver.setPrefix("/WEB-INF/views/"); resolver.setSuffix(".jsp"); resolver.setExposeContextBeansAsAttributes(true); return resolver; &#125; 1.2 使用XML的Spring配置：1234&lt;bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:prefix="/WEB-INF/views/" p:suffix=".jsp"/&gt; InternalResourceViewResolver配置就绪后，它就会将逻辑视图名解析为JSP文件，如下所示： home将会解析为”/WEB-INF/views/home.jsp” productList将会解析为”/WEB-INF/views/productList.jsp” 2. 使用Spring的JSP库2.1 将表单绑定到模型上 Spring中的表单绑定JSP标签库包含了14个标签，它们中的大多数都是用来渲染HTML中的表单标签。但是，它们与原生HTML表单标签的区别在于它们会绑定模型中的一个对象，能够根据模型中对象的属性填充值。标签库还包含了一个为用户展示错误的标签，它会将错误信息渲染到最终的HTML上。 为了使用表单绑定标签，需要在JSP页面中对其进行声明： 1&lt;%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form" %&gt; 在注册JSP中使用这些标签后，代码如下： 1234567&lt;sf:form method="post" commandName="spitter"&gt; First Name: &lt;sf:input path="firstName"/&gt;&lt;br/&gt; Last Name: &lt;sf:input path="lastName"/&gt;&lt;br/&gt; Username: &lt;sf:input path="username"/&gt; Password: &lt;sf:input path="password"/&gt; &lt;input type="submit" value="Register"/&gt;&lt;/sf:form&gt; sf:form会渲染一个HTML的form标签，但它也会通过commandName属性构建针对某个模型对象的上下文信息。在其他的表单绑定标签中，会引用这个模型对象的属性。需要注意的是，我们将commandName属性设置为spitter，因此，在模型中必须有一个key为spitter的对象，否则的话，表单不能正常渲染（会出现JSP错误）。这意味着我们需要修改一下SpitterController，以确保模型中存在spitter为key的Spitter对象：12345@RequestMapping(value = "/register", method = RequestMethod.GET)public String showRegistrationrForm(Model model)&#123; model.addAttribute(new Spitter()); return "registerForm";&#125; 回到这个表单，前三个输入域将HTMLinput标签改成了sf:input。这个标签会渲染成一个HTMLinput标签，其中type属性设置为”text”。我们在这里设置了path属性，input标签的value属性值将会设置为模型对象中path属性所对应的值。对于password输入域，我们使用sf:password来代替sf:input。sf:password与sf:input类似，但是它所渲染的HTML的input标签中，会将type属性设置为password，这样当输入的时候，它的值不会明文显示。 2.2 展现错误 如果存在校验错误的话，请求中会包含错误的详细信息，这些信息是与模型数据放到一起的。我们所需要做的就是到模型中将这些数据抽取出来，并展现给用户。sf:errors能够让这项任务变得简单： 1234567891011&lt;sf:form method="post" commandName="spitter"&gt; First Name: &lt;sf:input path="firstName"/&gt; &lt;sf:errors path="firstName"/&gt;&lt;br/&gt; Last Name: &lt;sf:input path="lastName"/&gt; &lt;sf:errors path="lastName"/&gt;&lt;br/&gt; Username: &lt;sf:input path="username"/&gt; &lt;sf:errors path="username"/&gt;&lt;br/&gt; Password: &lt;sf:password path="password"/&gt; &lt;sf:errors path="password"/&gt;&lt;br/&gt; &lt;input type="submit" value="Register"/&gt;&lt;/sf:form&gt; 在这里sf:errors的path属性设置成其对应需要展示的sf:input的path属性值，也就指定了要显示Spitter模型对象中哪个属性的错误信息。如果绑定的属性没有任何错误的话，那么sf:errors不会渲染任何东西。现在，我们已经可以为用户展现错误信息了，这样他们就能够修正这些错误了。我们还可以更进一步，修改错误的样式，使其更加突出显示。为了做到这一点，可以设置其cssClass属性： 1234567891011&lt;sf:form method="post" commandName="spitter"&gt; First Name: &lt;sf:input path="firstName"/&gt; &lt;sf:errors path="firstName" cssClass="error"/&gt;&lt;br/&gt; Last Name: &lt;sf:input path="lastName"/&gt; &lt;sf:errors path="lastName" cssClass="error"/&gt;&lt;br/&gt; Username: &lt;sf:input path="username"/&gt; &lt;sf:errors path="username" cssClass="error"/&gt;&lt;br/&gt; Password: &lt;sf:password path="password"/&gt; &lt;sf:errors path="password" cssClass="error"/&gt;&lt;br/&gt; &lt;input type="submit" value="Register"/&gt;&lt;/sf:form&gt; 2.3 创建URL s:url标签的主要任务是创建URL，然后将其赋值给一个变量或者渲染到响应中。它是JSTL中c:url标签的替代者，但是它有自己的特殊技巧。按照其最简单的形式s:url会接受一个相当于Servlet上线文的URL，并在渲染的时候预先添加上Servlet上下文路径。例如： 1&lt;a href="&lt;s:url value="/spitter/register"/&gt;"&gt;Register&lt;/a&gt; 另外，还可以使用s:url创建URL，并将其赋值给一个变量供模板在稍后使用： 12&lt;s:url value="/spitter/register" var="registerUrl"&gt;&lt;/s:url&gt;&lt;a href="$&#123;registerUrl&#125;"&gt;Register&lt;/a&gt; 默认情况下，URL是在页面作用域内创建的。但是通过设置scope属性，我们可以让s:url在应用作用域内、会话作用域内或请求作用域内创建URL： 1&lt;s:url value="/spitter/register" var="registerUrl" scope="request"/&gt; 如果希望在URL上添加参数的话，那么你可以使用s:param标签:1234&lt;s:url value="/spitter/register" var="registerUrl" scope="request"&gt; &lt;s:param name="max" value="60"/&gt; &lt;s:param name="count" value="20"/&gt;&lt;/s:url&gt;]]></content>
@@ -8,8 +13,8 @@
         <category>springMVC</category>
       </categories>
       <tags>
-        <tag>springMVC</tag>
         <tag>spring</tag>
+        <tag>springMVC</tag>
       </tags>
   </entry>
   <entry>
@@ -20,8 +25,8 @@
         <category>springMVC</category>
       </categories>
       <tags>
-        <tag>springMVC</tag>
         <tag>spring</tag>
+        <tag>springMVC</tag>
       </tags>
   </entry>
   <entry>
