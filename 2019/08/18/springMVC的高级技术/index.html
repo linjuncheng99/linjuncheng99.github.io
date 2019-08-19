@@ -75,14 +75,18 @@
 </script>
 
 
-  <meta property="og:type" content="article">
+  <meta name="description" content="本章内容：  spring MVC配置的代替方案 处理文件上传 在处理器中控制异常 使用flash属性">
+<meta name="keywords" content="spring,springMVC">
+<meta property="og:type" content="article">
 <meta property="og:title" content="springMVC的高级技术">
 <meta property="og:url" content="http://codelin.com/2019/08/18/springMVC的高级技术/index.html">
 <meta property="og:site_name" content="CodeLin">
+<meta property="og:description" content="本章内容：  spring MVC配置的代替方案 处理文件上传 在处理器中控制异常 使用flash属性">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-18T12:20:27.263Z">
+<meta property="og:updated_time" content="2019-08-19T06:57:44.374Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="springMVC的高级技术">
+<meta name="twitter:description" content="本章内容：  spring MVC配置的代替方案 处理文件上传 在处理器中控制异常 使用flash属性">
   <link rel="alternate" href="/atom.xml" title="CodeLin" type="application/atom+xml">
   <link rel="canonical" href="http://codelin.com/2019/08/18/springMVC的高级技术/">
 
@@ -307,6 +311,31 @@
               <time title="创建时间：2019-08-18 20:20:27" itemprop="dateCreated datePublished" datetime="2019-08-18T20:20:27+08:00">2019-08-18</time>
             </span>
           
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-08-19 14:57:44" itemprop="dateModified" datetime="2019-08-19T14:57:44+08:00">2019-08-19</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/springMVC/" itemprop="url" rel="index"><span itemprop="name">springMVC</span></a></span>
+
+                
+                
+              
+            </span>
+          
 
           
             <span class="post-meta-item" title="阅读次数">
@@ -325,7 +354,7 @@
               
                 <span class="post-meta-item-text">本文字数：</span>
               
-              <span>0</span>
+              <span>8.9k</span>
             </span>
           
             <span class="post-meta-item" title="阅读时长">
@@ -335,7 +364,7 @@
               
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
               
-              <span>1 分钟</span>
+              <span>8 分钟</span>
             </span>
           
 
@@ -348,7 +377,163 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        
+        <p>本章内容：</p>
+<ul>
+<li>spring MVC配置的代替方案</li>
+<li>处理文件上传</li>
+<li>在处理器中控制异常</li>
+<li>使用flash属性</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="springMVC配置的代替方案"><a href="#springMVC配置的代替方案" class="headerlink" title="springMVC配置的代替方案"></a>springMVC配置的代替方案</h2><h3 id="1-自定义DispatcherServlet配置"><a href="#1-自定义DispatcherServlet配置" class="headerlink" title="1. 自定义DispatcherServlet配置"></a>1. 自定义DispatcherServlet配置</h3><ul>
+<li>通过重载AbstractAnnotationConfigDispatcherServletInitializer实现类的customizeRegistration()方法来自定义DispatcherServlet配置</li>
+</ul>
+<p>在AbstractAnnotationConfigDispatcherServletInitializer将DispatcherServlet注册到Servlet容器之后，就会调用customizeRegistration()方法，并将Servlet注册后得到的ServletRegistration.Dynamic传递进来，通过重载customizeRegistration()方法，我们可以对DispatcherServlet进行额外的配置。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@Override</span></span><br><span class="line"><span class="number">22</span>     <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">customizeRegistration</span><span class="params">(ServletRegistration.Dynamic registration)</span> </span>&#123;</span><br><span class="line"><span class="number">23</span>         <span class="keyword">super</span>.customizeRegistration(registration);</span><br><span class="line"><span class="number">24</span>         registration.setMultipartConfig(<span class="keyword">new</span> MultipartConfigElement(<span class="string">"/tmp/coreqi/uploads"</span>));<span class="comment">//配置对multipart的支持</span></span><br><span class="line"><span class="number">25</span>         registration.setLoadOnStartup(<span class="number">1</span>);<span class="comment">//设置load-on-startup优先级</span></span><br><span class="line"><span class="number">26</span>     &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-添加其他的Servlet和Filter"><a href="#2-添加其他的Servlet和Filter" class="headerlink" title="2. 添加其他的Servlet和Filter"></a>2. 添加其他的Servlet和Filter</h3><ul>
+<li>基于java的初始化器（initializer）的一个好处就是我们可以定义任意数量的初始化器类。所以想往web容器中注册其他Servlet的话，只需要创建一个新的初始化器就可以了，最简单的方式就是实现spring的WebApplicationInitializer接口：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> web.myapp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.web.WebApplicationInitializer;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.Registration;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.ServletContext;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.ServletException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyServletInitializer</span> <span class="keyword">implements</span> <span class="title">WebApplicationInitializer</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStartup</span><span class="params">(ServletContext servletContext)</span> <span class="keyword">throws</span> ServletException </span>&#123;</span><br><span class="line">        <span class="comment">//注册Servlet</span></span><br><span class="line">        Registration.Dynamic myServlet=servletContext.addServlet(<span class="string">"myServlet"</span>,MyServlet.class);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//映射Servlet</span></span><br><span class="line">        myServlet.addMapping(<span class="string">"/custom/**"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>注册了一个 Servlet并将其映射到一个路径上。我们也可以通过这种方式来手动注 册DispatcherServlet。（但这并没有必要，因 为AbstractAnnotationConfigDispatcherServletInitializer 没用太多代码就将这项任务完成得很漂亮。）</p>
+<ul>
+<li>类似地，我们还可以创建新的WebApplicationInitializer实现 来注册Listener和Filter</li>
+</ul>
+<h3 id="3-在web-xml中声明DispatcherServlet"><a href="#3-在web-xml中声明DispatcherServlet" class="headerlink" title="3. 在web.xml中声明DispatcherServlet"></a>3. 在web.xml中声明DispatcherServlet</h3><ul>
+<li>在典型的Spring MVC应用中，我们会需要DispatcherServlet和 Context-Loader Listener。AbstractAnnotationConfigDispatcherServletInitializer 会自动注册它们，但是如果需要在web.xml中注册的话，那就需要我 们自己来完成这项任务了。 如下是一个基本的web.xml文件，它按照传统的方式搭建了 DispatcherServlet和ContextLoaderListener。</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">web-app</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">display-name</span>&gt;</span>Archetype Created Web Application<span class="tag">&lt;/<span class="name">display-name</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!--设置根上下文配置文件的位置--&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">context-param</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>contextConfigLocation<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">param-value</span>&gt;</span>/WEB-INF/spring/root-context.xml<span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">context-param</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--  注册ContextLoaderListener--&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">listener</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">listener-class</span>&gt;</span></span><br><span class="line">      org.springframework.web.context.ContextLoaderListener</span><br><span class="line">    <span class="tag">&lt;/<span class="name">listener-class</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">listener</span>&gt;</span></span><br><span class="line">  </span><br><span class="line"><span class="comment">&lt;!--  注册DispacherServlet--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>appServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span></span><br><span class="line">    org.springframework.web.servlet.DispatcherServlet</span><br><span class="line">  <span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">load-on-startup</span>&gt;</span>1<span class="tag">&lt;/<span class="name">load-on-startup</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br><span class="line">  </span><br><span class="line"><span class="comment">&lt;!--  将DispacherServlet映射到“/”--&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>appServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">web-app</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>ContextLoaderListener和 DispatcherServlet各自都会加载一个Spring应用上下文。上下文 参数contextConfigLocation指定了一个XML文件的地址，这个 文件定义了根应用上下文，它会被ContextLoaderListener加 载。如程序所示，根上下文会从“/WEB-INF/spring/root- context.xml”中加载bean定义。</li>
+</ul>
+<ul>
+<li>DispatcherServlet会根据Servlet的名字找到一个文件，并基于该 文件加载应用上下文。在程序中，Servlet的名字 是appServlet，因此DispatcherServlet会从“/WEB- INF/appServlet-context.xml”文件中加载其应用上下文。</li>
+</ul>
+<p>如果你希望指定DispatcherServlet配置文件的位置的话，那么 可以在Servlet上指定一个contextConfigLocation初始化参数。 例如，如下的配置中，DispatcherServlet会从“/WEB- INF/spring/appServlet/servlet-context.xml”加载它的bean：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>appServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span></span><br><span class="line">    org.springframework.web.servlet.DispatcherServlet</span><br><span class="line">  <span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>contextConfigLocation<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-value</span>&gt;</span></span><br><span class="line">      /WEB-INF/spring/appServlet/servlet-context.xml</span><br><span class="line">    <span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">load-on-startup</span>&gt;</span>1<span class="tag">&lt;/<span class="name">load-on-startup</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="处理multipart形式的数据"><a href="#处理multipart形式的数据" class="headerlink" title="处理multipart形式的数据"></a>处理multipart形式的数据</h2><h3 id="1-配置multipart解析器"><a href="#1-配置multipart解析器" class="headerlink" title="1. 配置multipart解析器"></a>1. 配置multipart解析器</h3><p>   DispatcherServlet并没有实现任何解析multipart请求数据的功 能。它将该任务委托给了Spring中MultipartResolver策略接口的 实现，通过这个实现类来解析multipart请求中的内容。从Spring 3.1开 始，Spring内置了两个MultipartResolver的实现供我们选择：</p>
+<ul>
+<li><p>CommonsMultipartResolver：使用Jakarta Commons FileUpload解析multipart请求</p>
+</li>
+<li><p>StandardServletMultipartResolver：依赖于Servlet 3.0 对multipart请求的支持（始于Spring 3.1）。</p>
+</li>
+</ul>
+<h4 id="1-1-使用Servlet-3-0解析multipart请求"><a href="#1-1-使用Servlet-3-0解析multipart请求" class="headerlink" title="1.1 使用Servlet 3.0解析multipart请求"></a>1.1 使用Servlet 3.0解析multipart请求</h4><ul>
+<li>兼容Servlet 3.0的StandardServletMultipartResolver没有构 造器参数，也没有要设置的属性。这样，在Spring应用上下文中，将 其声明为bean就会非常简单，如下所示：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Bean</span> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> MultipartResolver <span class="title">multipartResolver</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> StandardServletMultipartResolver();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>我们可以通过重载customizeRegistration() 方法（它会得到一个Dynamic作为参数）来配置multipart的具体细 节：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">customizeRegisteration</span><span class="params">(Registration.Dynamic registration)</span></span>&#123;</span><br><span class="line">        registration.setMutiparConfig(</span><br><span class="line">                <span class="keyword">new</span> MultipartConfigElement(<span class="string">"/tmp/spittr/uploads"</span>)</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>除了临时路径的位 置，其他的构造器所能接受的参数如下：</p>
+</li>
+<li><p>上传文件的最大容量（以字节为单位）。默认是没有限制的</p>
+</li>
+<li><p>整个multipart请求的最大容量（以字节为单位），不会关心有多 少个part以及每个part的大小。默认是没有限制的</p>
+</li>
+<li><p>在上传的过程中，如果文件大小达到了一个指定最大容量（以字 节为单位），将会写入到临时文件路径中。默认值为0，也就是 所有上传的文件都会写入到磁盘上。</p>
+</li>
+</ul>
+<p>例如，假设我们想限制文件的大小不超过2MB，整个请求不超过 4MB，而且所有的文件都要写到磁盘中。下面的代码使 用MultipartConfigElement设置了这些临界值:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">customizeRegisteration</span><span class="params">(Registration.Dynamic registration)</span></span>&#123;</span><br><span class="line">        registration.setMutiparConfig(</span><br><span class="line">                <span class="keyword">new</span> MultipartConfigElement(<span class="string">"/tmp/spittr/uploads"</span>,</span><br><span class="line">                        <span class="number">2097152</span>,<span class="number">4194564</span>,<span class="number">0</span>)</span><br><span class="line">        );</span><br></pre></td></tr></table></figure>
+
+<p>如果我们使用更为传统的web.xml来配 置MultipartConfigElement的话，那么可以使用servlet中 的multipart-config元素，如下所示：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>appServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span></span><br><span class="line">    org.springframework.web.servlet.DispatcherServlet</span><br><span class="line">  <span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">init-param</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-name</span>&gt;</span>contextConfigLocation<span class="tag">&lt;/<span class="name">param-name</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param-value</span>&gt;</span></span><br><span class="line">      /WEB-INF/spring/appServlet/servlet-context.xml</span><br><span class="line">    <span class="tag">&lt;/<span class="name">param-value</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">init-param</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">load-on-startup</span>&gt;</span>1<span class="tag">&lt;/<span class="name">load-on-startup</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">multipart-config</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">location</span>&gt;</span>/tmp/spittr/uploads<span class="tag">&lt;/<span class="name">location</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">max-file-size</span>&gt;</span>2044844<span class="tag">&lt;/<span class="name">max-file-size</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">max-request-size</span>&gt;</span>58787474<span class="tag">&lt;/<span class="name">max-request-size</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">multipart-config</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2-配置Jakarta-Commons-FileUpload-multipart解析器"><a href="#1-2-配置Jakarta-Commons-FileUpload-multipart解析器" class="headerlink" title="1.2 配置Jakarta Commons FileUpload multipart解析器"></a>1.2 配置Jakarta Commons FileUpload multipart解析器</h4><ul>
+<li>通常来讲，StandardServletMultipartResolver会是最佳的 选择，但是如果我们需要将应用部署到非Servlet 3.0的容器中，那么 就得需要替代的方案。如果喜欢的话，我们可以编写自己的 MultipartResolver实现。不过，除非想要在处理multipart请求的 257<br>时候执行特定的逻辑，否则的话，没有必要这样做。Spring内置了 CommonsMultipartResolver，可以作 为StandardServletMultipartResolver的替代方案。</li>
+</ul>
+<h3 id="2-处理multipart请求"><a href="#2-处理multipart请求" class="headerlink" title="2. 处理multipart请求"></a>2. 处理multipart请求</h3><ul>
+<li>现在已经在Spring中（或Servlet容器中）配置好了对mutipart请求的处 理，那么接下来我们就可以编写控制器方法来接收上传的文件。要实 现这一点，最常见的方式就是在某个控制器方法参数上添 加@RequestPart注解。</li>
+</ul>
+<h4 id="2-1-接受MultipartFile"><a href="#2-1-接受MultipartFile" class="headerlink" title="2.1 接受MultipartFile"></a>2.1 接受MultipartFile</h4><ul>
+<li>Spring还提 供了MultipartFile接口，它为处理multipart数据提供了内容更为 丰富的对象。如下的程序清单展现了MultipartFile接口的概况<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.web.multipart;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.io.InputStreamSource;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MultipartFile</span> <span class="keyword">extends</span> <span class="title">InputStreamSource</span> </span>&#123;</span><br><span class="line">    <span class="function">String <span class="title">getName</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">String <span class="title">getOriginalFilename</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">String <span class="title">getContentType</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">long</span> <span class="title">getSize</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">byte</span>[] getBytes() <span class="keyword">throws</span> IOException;</span><br><span class="line"></span><br><span class="line">    <span class="function">InputStream <span class="title">getInputStream</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">transferTo</span><span class="params">(File var1)</span> <span class="keyword">throws</span> IOException, IllegalStateException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>MultipartFile提供了获取上传文件byte的方式， 但是它所提供的功能并不仅限于此，还能获得原始的文件名、大小以 及内容类型。它还提供了一个InputStream，用来将文件数据以流 的方式进行读取。 除此之外，MultipartFile还提供了一个便利的transferTo()方 法，它能够帮助我们将上传的文件写入到文件系统中。</p>
+<h4 id="2-2-以Part的形式接受上传的文件"><a href="#2-2-以Part的形式接受上传的文件" class="headerlink" title="2.2 以Part的形式接受上传的文件"></a>2.2 以Part的形式接受上传的文件</h4><ul>
+<li>Part接口与MultipartFile并没有 太大的差别:<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> javax.servlet.http;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.util.Collection;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Part</span> </span>&#123;</span><br><span class="line">    <span class="function">InputStream <span class="title">getInputStream</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">String <span class="title">getContentType</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">String <span class="title">getName</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">String <span class="title">getSubmittedFileName</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">long</span> <span class="title">getSize</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">write</span><span class="params">(String var1)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">delete</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">String <span class="title">getHeader</span><span class="params">(String var1)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">Collection&lt;String&gt; <span class="title">getHeaders</span><span class="params">(String var1)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">Collection&lt;String&gt; <span class="title">getHeaderNames</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="处理异常"><a href="#处理异常" class="headerlink" title="处理异常"></a>处理异常</h2><p>Spring提供了多种方式将异常转换为响应：</p>
+<ul>
+<li><p>特定的Spring异常将会自动映射为指定的HTTP状态码；</p>
+</li>
+<li><p>异常上可以添加@ResponseStatus注解，从而将其映射为某一 个HTTP状态码；</p>
+</li>
+<li><p>在方法上可以添加@ExceptionHandler注解，使其用来处理 异常。</p>
+</li>
+</ul>
+<h3 id="1-将异常映射为HTTP状态码"><a href="#1-将异常映射为HTTP状态码" class="headerlink" title="1. 将异常映射为HTTP状态码"></a>1. 将异常映射为HTTP状态码</h3><table>
+<thead>
+<tr>
+<th><font color="green">spring异常</font></th>
+<th><font color="yellow">Http异常</font></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BindException</td>
+<td>400 - Bad Request</td>
+</tr>
+<tr>
+<td>ConversionNotSupportedException</td>
+<td>500 - Internal Server Error</td>
+</tr>
+<tr>
+<td>HttpMediaTypeNotAcceptableException</td>
+<td>406 - Not Acceptable</td>
+</tr>
+<tr>
+<td>HttpMediaTypeNotSupportedException</td>
+<td>415 - Unsupported Media Type</td>
+</tr>
+<tr>
+<td>HttpMessageNotReadableException</td>
+<td>400 - Bad Request</td>
+</tr>
+<tr>
+<td>HttpMessageNotWritableException</td>
+<td>500 - Internal Server Error</td>
+</tr>
+<tr>
+<td>HttpRequestMethodNotSupportedException</td>
+<td>405 - Method Not Allowed</td>
+</tr>
+<tr>
+<td>MethodArgumentNotValidException</td>
+<td>400 - Bad Request</td>
+</tr>
+<tr>
+<td>MissingServletRequestParameterException</td>
+<td>400 - Bad Request</td>
+</tr>
+<tr>
+<td>MissingServletRequestPartException</td>
+<td>400 - Bad Request</td>
+</tr>
+<tr>
+<td>NoSuchRequestHandlingMethodException</td>
+<td>404 - Not Found</td>
+</tr>
+<tr>
+<td>TypeMismatchException</td>
+<td>400 - Bad Request</td>
+</tr>
+</tbody></table>
+<h3 id="2-ResponseStatus注解：将异常映射为特定的状态码"><a href="#2-ResponseStatus注解：将异常映射为特定的状态码" class="headerlink" title="2. @ResponseStatus注解：将异常映射为特定的状态码"></a>2. @ResponseStatus注解：将异常映射为特定的状态码</h3><ul>
+<li>在引入@ResponseStatus注解之后，如果控制器方法抛出 SpittleNotFound-Exception异常的话，响应将会具有404状态 码</li>
+</ul>
+
     </div>
 
     
@@ -397,6 +582,17 @@
       
 
       <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/spring/" rel="tag"># spring</a>
+            
+              <a href="/tags/springMVC/" rel="tag"># springMVC</a>
+            
+          </div>
+        
 
         
 
@@ -450,8 +646,17 @@
 
   <aside id="sidebar" class="sidebar">
     <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
 
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -577,6 +782,23 @@
 
         </div>
       </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#springMVC配置的代替方案"><span class="nav-number">1.</span> <span class="nav-text">springMVC配置的代替方案</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-自定义DispatcherServlet配置"><span class="nav-number">1.1.</span> <span class="nav-text">1. 自定义DispatcherServlet配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-添加其他的Servlet和Filter"><span class="nav-number">1.2.</span> <span class="nav-text">2. 添加其他的Servlet和Filter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-在web-xml中声明DispatcherServlet"><span class="nav-number">1.3.</span> <span class="nav-text">3. 在web.xml中声明DispatcherServlet</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理multipart形式的数据"><span class="nav-number">2.</span> <span class="nav-text">处理multipart形式的数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-配置multipart解析器"><span class="nav-number">2.1.</span> <span class="nav-text">1. 配置multipart解析器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-使用Servlet-3-0解析multipart请求"><span class="nav-number">2.1.1.</span> <span class="nav-text">1.1 使用Servlet 3.0解析multipart请求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-配置Jakarta-Commons-FileUpload-multipart解析器"><span class="nav-number">2.1.2.</span> <span class="nav-text">1.2 配置Jakarta Commons FileUpload multipart解析器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-处理multipart请求"><span class="nav-number">2.2.</span> <span class="nav-text">2. 处理multipart请求</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-接受MultipartFile"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.1 接受MultipartFile</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-以Part的形式接受上传的文件"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2 以Part的形式接受上传的文件</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理异常"><span class="nav-number">3.</span> <span class="nav-text">处理异常</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-将异常映射为HTTP状态码"><span class="nav-number">3.1.</span> <span class="nav-text">1. 将异常映射为HTTP状态码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-ResponseStatus注解：将异常映射为特定的状态码"><span class="nav-number">3.2.</span> <span class="nav-text">2. @ResponseStatus注解：将异常映射为特定的状态码</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
         <div class="back-to-top motion-element">
           <i class="fa fa-arrow-up"></i>
           
@@ -606,14 +828,14 @@
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
     
-    <span title="站点总字数">45k</span>
+    <span title="站点总字数">53k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
     
-    <span title="站点阅读时长">41 分钟</span>
+    <span title="站点阅读时长">49 分钟</span>
 </div>
 
 <!--
