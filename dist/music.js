@@ -212,6 +212,23 @@ const ap = new APlayer({
    },
 
 
+   {
+      name: "给自己的歌 ",
+      artist: '李宗盛',
+      url: 'http://music.163.com/song/media/outer/url?id=394670.mp3',
+      cover: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3025300632,3455263669&fm=26&gp=0.jpg',
+      lrc: 'http://music.163.com/api/song/media?id=394670',
+   },
+
+   {
+      name:"太傻" ,
+      artist: '巫启贤',
+      url: 'http://music.163.com/song/media/outer/url?id=158616.mp3',
+      cover: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3025300632,3455263669&fm=26&gp=0.jpg',
+      lrc: 'http://music.163.com/api/song/media?id=158616',
+   },
+
+
     
     ]
 });
