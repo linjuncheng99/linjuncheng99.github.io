@@ -3,7 +3,14 @@
   <entry>
     <title><![CDATA[品优购项目笔记1--环境搭建]]></title>
     <url>%2F2019%2F09%2F09%2F%E5%93%81%E4%BC%98%E8%B4%AD%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B01-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%2F</url>
-    <content type="text"><![CDATA[]]></content>
+    <content type="text"><![CDATA[本章内容： 需求分许与系统设计 分布式框架–Dubbox 框架搭建 需求分析与系统设计SOA架构1.定义 面向服务的体系结构，是一个组件模型，它将应用程序的不同功能单元(称为服务)通过这些服务之间定义良好的接口和契约联系起来。接口是采用中立的方式进行定义的，它应该独立于实现服务的硬件平台、操作系统和编程语言。这使得构建在各种这样的系统中的服务可以以一种统一和通用的方式进行交互。 2.特征 可重用 松耦合 明确定义的接口 无状态的服务设计 基于开放标准 品优购架构 数据表 表名称 含义 tb_brand 含义 tb_specification 规格 tb_specification_option 规格选项 tb_type_temple 类型模板：用于关联品牌和规格 tb_item_cat 商品分类 tb_seller 商家 tb_goods 商品 tb_goods_desc 商品详情 tb_item 商品明细 tb_content 内容（广告） tb_content_category 内容（广告类型） tb_user 用户 tb_order 订单 tb_order_item 订单明细 tb_pay_log 支付日志 框架组合 后端框架采用spring+springMVC+mybatis+Dubbxo 前段采用angularJS+Bootstrap框架]]></content>
+      <categories>
+        <category>实战</category>
+      </categories>
+      <tags>
+        <tag>java</tag>
+        <tag>实战</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[springMVC的高级技术]]></title>
