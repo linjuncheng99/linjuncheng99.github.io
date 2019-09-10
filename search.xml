@@ -14,13 +14,14 @@
   <entry>
     <title><![CDATA[品优购项目笔记1--环境搭建]]></title>
     <url>%2F2019%2F09%2F09%2F%E5%93%81%E4%BC%98%E8%B4%AD%E9%A1%B9%E7%9B%AE%E7%AC%94%E8%AE%B01-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%2F</url>
-    <content type="text"><![CDATA[本章内容： 需求分许与系统设计 分布式框架–Dubbox 框架搭建 需求分析与系统设计SOA架构1.定义 面向服务的体系结构，是一个组件模型，它将应用程序的不同功能单元(称为服务)通过这些服务之间定义良好的接口和契约联系起来。接口是采用中立的方式进行定义的，它应该独立于实现服务的硬件平台、操作系统和编程语言。这使得构建在各种这样的系统中的服务可以以一种统一和通用的方式进行交互。 2.特征 可重用 松耦合 明确定义的接口 无状态的服务设计 基于开放标准 品优购架构 数据表 表名称 含义 tb_brand 含义 tb_specification 规格 tb_specification_option 规格选项 tb_type_temple 类型模板：用于关联品牌和规格 tb_item_cat 商品分类 tb_seller 商家 tb_goods 商品 tb_goods_desc 商品详情 tb_item 商品明细 tb_content 内容（广告） tb_content_category 内容（广告类型） tb_user 用户 tb_order 订单 tb_order_item 订单明细 tb_pay_log 支付日志 框架组合 后端框架采用spring+springMVC+mybatis+Dubbxo 前段采用angularJS+Bootstrap框架]]></content>
+    <content type="text"><![CDATA[本章内容： 需求分许与系统设计 分布式框架–Dubbox 框架搭建 需求分析与系统设计SOA架构1.定义 面向服务的体系结构，是一个组件模型，它将应用程序的不同功能单元(称为服务)通过这些服务之间定义良好的接口和契约联系起来。接口是采用中立的方式进行定义的，它应该独立于实现服务的硬件平台、操作系统和编程语言。这使得构建在各种这样的系统中的服务可以以一种统一和通用的方式进行交互。 2.特征 可重用 松耦合 明确定义的接口 无状态的服务设计 基于开放标准 品优购架构 数据表 表名称 含义 tb_brand 含义 tb_specification 规格 tb_specification_option 规格选项 tb_type_temple 类型模板：用于关联品牌和规格 tb_item_cat 商品分类 tb_seller 商家 tb_goods 商品 tb_goods_desc 商品详情 tb_item 商品明细 tb_content 内容（广告） tb_content_category 内容（广告类型） tb_user 用户 tb_order 订单 tb_order_item 订单明细 tb_pay_log 支付日志 框架组合 后端框架采用spring+springMVC+mybatis+Dubbxo 前段采用angularJS+Bootstrap框架 分布式框架–Dubbox1. Dubbox简介 Dubbox是一个分布式服务框架，其前身是阿里巴巴开源项目Dubbo，被国内电商及互联网项目中使用，后期阿里巴巴停止了该项目的维护，当当网便在Dubbo基础上进行优化，并继续维护，为了与原有的Dubbo区分，故将其命名为Dubbox。 Dubbox致力于提供高性能和透明化的RPC远程服务调用方案，以及SOA服务治理方案。简单的说，dubbox就是个服务框架，如果没有分布式需求，其实是不需要用的，只有在分布式的时候，才有dubbox这样的分布式服务框架的需求，并且本质上的作用就是服务调用，说白了就是个远程服务调用的分布式框架。 Dubbox架构图 1. 节点角色说明： Provider： 暴露服务的服务提供方 Consumer： 调用远程服务的服务消费方 Registry： 服务注册与发现的注册中心 Monitor： 统计服务的调用次调和调用时间的监控中心 Container： 服务运行容器 2. 调用关系说明： 服务容器负责启动，加载，运行服务提供者。 服务提供者在启动时，向注册中心注册自己提供的服务。 服务消费者在启动时，向注册中心订阅自己所需的服务。 注册中心返回服务提供者地址列表给消费者，如果有变更，注册中心将基于长连接推送变更数据给消费者。 服务消费者，从提供者地址列表中，基于软负载均衡算法，选一台提供者进行调用，如果调用失败，再选另一台调用。 服务消费者和提供者，在内存中累计调用次数和调用时间，定时每分钟发送一次统计数据到监控中心。 2. 注册中心Zookeeper的安装框架搭建–IDEA1. 创建pinyougou-parent父工程 点击File -&gt;New-&gt;Module…，创建maven项目 添加pom文件内容如下： 12 注意pom的打包方式是pom 2. 创建公用工程pinyougou-common 点击File-&gt;New-&gt;Module… 添加pom文件内容如下: 12 注意pom的打包方式是jar 创建pinyougou-dao工程和pinyougou-pojo工程等子工程步骤和pinyougou-common基本上一样 3. 创建pinyougou-manager-web项目]]></content>
       <categories>
-        <category>实战</category>
+        <category>实战 Dubbox</category>
       </categories>
       <tags>
         <tag>java</tag>
         <tag>实战</tag>
+        <tag>Dubbox</tag>
       </tags>
   </entry>
   <entry>
